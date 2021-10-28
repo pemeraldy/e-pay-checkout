@@ -6,9 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tiqwa Payment</title>
   <style>
+    @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
     *{
       padding: 0;
       margin: 0;
+      font-family: "Source Sans Pro", sans-serif;
+      font-size: 16px;
+      box-sizing: border-box;
     }
     .wrapper{
       width: 100%;
@@ -16,7 +20,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #ddeefc; /*#dde4fc*/
+      background: #f0ddfc;  /*#dde4fc or #ddeefc or #f0ddfc */
     }
     .details-container{
       max-width: 570px;
@@ -30,7 +34,8 @@
       border-radius: 15px;
       margin: 0 auto;
       margin-bottom: -100px;
-      box-shadow: 0 20px 60px 0 rgb(14 42 90 / 40%);
+      box-shadow: 0 20px 60px 0 rgb(78 14 90 / 40%);
+      /* box-shadow: 0 20px 60px 0 rgb(14 42 90 / 40%); */
       position: relative;
       z-index: 2;
     }
@@ -40,11 +45,56 @@
       padding-top: 180px;
       border-radius: 15px;
       background: rgb(255, 255, 255);
-      box-shadow: 0 30px 60px 0 rgb(90 116 148 / 40%);
+      box-shadow: 0 30px 60px 0 rgb(142 90 148 / 40%);
+      /* box-shadow: 0 30px 60px 0 rgb(90 116 148 / 40%); */
     }
-    input{
+    .input-group{
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    label{
+      font-size: 14px;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #1a3b5d;
+      width: 100%;
       display: block;
+      user-select: none;
     }
+    .card-input{
+      width: 100%;
+      height: 50px;
+      border-radius: 5px;
+      box-shadow: none;
+      border: 1px solid #ced6e0;
+      transition: all 0.3s ease-in-out;
+      font-size: 18px;
+      padding: 5px 15px;
+      background: none;
+      color: #1a3b5d;
+      font-family: "Source Sans Pro", sans-serif;
+    }
+    .card-input:focus{
+      box-shadow: 0px 10px 20px -13px rgb(32 56 117 / 35%);
+      border-color:rgb(114, 22, 201);
+      outline: none;
+    }
+    .card-btn {
+      width: 100%;
+      height: 55px;
+      background: #4f0754;
+      border: none;
+      border-radius: 5px;
+      font-size: 22px;
+      font-weight: 500;
+      font-family: "Source Sans Pro", sans-serif;
+      box-shadow: 3px 10px 20px 0px rgb(135 35 210 / 30%);
+      /* box-shadow: 3px 10px 20px 0px rgb(35 100 210 / 30%); */
+      color: #fff;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -68,7 +118,7 @@
               <input type="text" id="cvv" class="card-input card-cvv " pattern="\d*">
             </div>
             </div>
-            <button type="submit">Pay N2500000</button>
+            <button class="card-btn" type="submit">Pay N2500000</button>
           </form>
         </div>
       </div>
