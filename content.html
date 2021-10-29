@@ -14,6 +14,9 @@
       font-size: 16px;
       box-sizing: border-box;
     }
+    img{
+      width: 100%;
+    }
     .wrapper{
       width: 100%;
       height: 100vh;
@@ -22,24 +25,122 @@
       align-items: center;
       background: #f0ddfc;  /*#dde4fc or #ddeefc or #f0ddfc */
     }
+    
+    /* CARD DISPLAY SECTION FRONT */
     .details-container{
       max-width: 570px;
       width: 100%;
       padding: 20px;
     }
+
     .card-display{
+      transition: 0.45s;
+      transform-style: preserve-3d;
       max-width: 430px;
       height: 270px;
-      background: rgb(63, 5, 71);
       border-radius: 15px;
       margin: 0 auto;
       margin-bottom: -100px;
+      overflow: hidden;
       box-shadow: 0 20px 60px 0 rgb(78 14 90 / 40%);
       /* box-shadow: 0 20px 60px 0 rgb(14 42 90 / 40%); */
       position: relative;
       z-index: 2;
     }
+    .card-display__front{
+      background: rgb(63, 5, 71);
+      padding: 10px;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      transition: 0.45s;
+      backface-visibility: hidden;
+      -webkit-backface-visibility:hidden;
+    }
+    .card-display__back{
+      width: 100%;
+      height: 100%;
+      display: flex;
+      border-radius: 15px;    
+      flex-direction: column;
+      justify-content: center;
+      position: absolute;
+      top:0;
+      left:0;
+      padding: 0 20px;
+      background: #4f0754;
+      backface-visibility: hidden;      
+      transform-style: preserve-3d;
+      transition: 0.45s;
+      transform: rotateY(180deg);
+    }
+
+    .card-display.cvv-active .card-display__back{
+      transform: rotateY(0);
+    }
+    .card-display.cvv-active .card-display__front{
+      transform: rotateY(180deg);
+    }
+
+    .chip-logo-wrap{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
     
+    .chip-img{
+      width: 45px;
+    }
+    .card-type{
+      width: 60px;
+      height: 45px;
+      transition: 0.45s;
+    }
+
+    .card-num-display{
+      display: flex;
+      color:white;
+      justify-content: space-between;
+      margin-top: 50px;
+      padding: 20px;
+      /* border: 1px solid white; */
+      border-radius: 5px;
+    }
+    span.num-display{
+      font-size: 24px;
+      margin: 2px;
+    }
+    .date-month-dispaly{
+      display: flex;
+      justify-content: center;
+    }
+    .date-month-dispaly span{
+      color: white;
+      font-size: 20px;
+    }
+
+    /* BACK */
+    
+    .card-display__back .card-num-display{
+      display: flex;
+      justify-content: end;
+      margin-top: 50px;
+      padding: 15px;
+      border: 1px solid white;
+      background: white;      
+      border-radius: 5px;
+    }
+    .card-display__back .card-num-display span{
+      color: rgb(29, 29, 29);
+      /* font-size: 24px; */
+    }
+    /* #################### */
+    .row{
+      display: flex;
+    }
+    .row .input-group{
+      padding: 0 5px;
+    }
     .form-wrapper{
       padding: 35px;
       padding-top: 180px;
@@ -94,34 +195,112 @@
       margin-top: 20px;
       cursor: pointer;
     }
-
+    /* RESPONSIVENESS */
+    @media screen and (max-width: 440px) {
+      .card-display{
+        max-width: 300px;
+        height: 190px;
+      }
+      .card-num-display{
+        margin-top: 20px;
+      }
+      span.num-display{
+        font-size: 12px;
+      }
+      .date-month-dispaly span{
+        font-size: 14px;
+      }
+      .card-display__back .card-num-display{
+        padding: 5px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="wrapper">
       <div class="details-container">
-        <div class="card-display"></div>
+        <div class="card-display">
+          <div class="card-display__front">
+            <div class="chip-logo-wrap">
+            <div class="chip-img"><img src="./chip.png" alt=""></div>
+            <div class="card-type"><img src="./mastercard.png" alt=""></div>
+          </div>
+
+          <div class="card-num-display">
+            <div class="batch">
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+            </div>
+            <div class="batch">
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+            </div>
+            <div class="batch">
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+            </div>
+            <div class="batch">
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+            </div>
+          </div>
+          <div class="date-month-dispaly">
+            <div>
+              <span>MM</span> <span>/</span> <span>YY</span>
+            </div>
+          </div>
+          </div>
+          <div class="card-display__back">
+            <div class="card-num-display">
+              <span>                
+                <label for="cvv">***</label>
+              </span>
+            </div>
+
+          </div>
+        </div>
         <div class="form-wrapper">
           <form class="card-form">
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
-              <input type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
+              <input autocomplete="off"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
             </div>
 
-            <div class="col-2">
+            <div class="row">
               <div class="input-group">
                 <label for="cardExp">Expiration Date</label>
-                <input type="text" id="cardExp" class="card-input card-exp" pattern="\d*">
-            </div>
-            <div class="input-group">
-              <label for="cvv">CVV</label>
-              <input type="text" id="cvv" class="card-input card-cvv " pattern="\d*">
-            </div>
+                <input type="text" id="cardExp" placeholder="09/21" class="card-input card-exp" pattern="\d*">
+              </div>
+              <div class="input-group">
+                <label for="cvv">CVV</label>
+                <input type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
+              </div>
             </div>
             <button class="card-btn" type="submit">Pay N2500000</button>
           </form>
         </div>
       </div>
   </div>
+  <!-- <script src="./ui-utils.js"></script> -->
+  <script>
+    function spinCard() {
+    const ccvInput = document.getElementById("cvv");
+    ccvInput.addEventListener("focus", () => {
+      document.querySelector(".card-display").classList.add("cvv-active");
+    });
+    ccvInput.addEventListener("blur", () => {
+      document.querySelector(".card-display").classList.remove("cvv-active");
+    });
+  }
+  spinCard()
+  </script>
 </body>
 </html>
