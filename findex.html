@@ -15,6 +15,9 @@
 </head>
 <body>
   <button onclick="loadIframe();">Open Iframe</button>
+  <!-- <div class="loader-container">
+    <div class="loader"></div>
+  </div> -->
   <!-- <iframe transparency="true"  onload="onLoad()" src="./content.html" height="100vh" width="100%" frameborder="0"></iframe> -->
   <script>
     const iframeStyle = `position:fixed;
@@ -30,6 +33,15 @@
       overflow:hidden;
        z-index:999999;`
     const loaderCss = `
+      .loader-container{
+        position:absolute;
+        top:0; left:0;
+        height:100vh; width: 100%;
+        display:flex;
+        justify-content:center; 
+        align-items: center;
+        background:#fed6ff;
+      }
       .loader,
       .loader:before,
       .loader:after {
@@ -56,7 +68,7 @@
       .loader:before {
         width: 5.2em;
         height: 10.2em;
-        background: #0dc5c1;
+        background: #fed6ff;
         border-radius: 10.2em 0 0 10.2em;
         top: -0.1em;
         left: -0.1em;
@@ -68,7 +80,7 @@
       .loader:after {
         width: 5.2em;
         height: 10.2em;
-        background: #0dc5c1;
+        background: #fed6ff;
         border-radius: 0 10.2em 10.2em 0;
         top: -0.1em;
         left: 4.9em;
@@ -97,7 +109,7 @@
           transform: rotate(360deg);
         }
       }
-          `
+    `
     function onLoad(){
     console.log('iframe loaded!!!');
     // document.querySelector('.loader-container').style.display = 'none'
@@ -107,6 +119,8 @@
       const loaderContainer = document.createElement('DIV')
       loaderContainer.classList.add('loader-container')
       loaderElement.classList.add('loader')
+      loaderContainer.appendChild(loaderElement)
+      document.body.appendChild(loaderContainer)
 
       // Create styleSheet
       const styleSheet = document.createElement("style")
@@ -121,7 +135,9 @@
       // Iframe TODO: Give id to iframe
       Iframe.style = iframeStyle
       document.querySelector('body').appendChild(Iframe)
-      Iframe.onload = onLoad()
+      Iframe.onload = function (){
+        console.log("Iframse loaded!!!")
+      }
     }
     function closeIframe (){
       document.querySelector('body').removeChild(Iframe)
