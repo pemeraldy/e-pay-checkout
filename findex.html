@@ -40,7 +40,7 @@
         display:flex;
         justify-content:center; 
         align-items: center;
-        background:#fed6ff;
+        background:#f0ddfc;
       }
       .loader,
       .loader:before,
@@ -68,7 +68,7 @@
       .loader:before {
         width: 5.2em;
         height: 10.2em;
-        background: #fed6ff;
+        background: #f0ddfc;
         border-radius: 10.2em 0 0 10.2em;
         top: -0.1em;
         left: -0.1em;
@@ -80,7 +80,7 @@
       .loader:after {
         width: 5.2em;
         height: 10.2em;
-        background: #fed6ff;
+        background: #f0ddfc;
         border-radius: 0 10.2em 10.2em 0;
         top: -0.1em;
         left: 4.9em;
@@ -131,16 +131,18 @@
     function loadIframe(){
       createLoader()
       const Iframe = document.createElement('IFRAME')
+      Iframe.style = 'display:none;'
       Iframe.src = "https://adoring-saha-1e3c5b.netlify.app/"
       // Iframe TODO: Give id to iframe
-      Iframe.style = iframeStyle
       document.querySelector('body').appendChild(Iframe)
       Iframe.onload = function (){
-        console.log("Iframse loaded!!!")
+        Iframe.style += "display: block"
+        Iframe.style = iframeStyle
       }
     }
     function closeIframe (){
-      document.querySelector('body').removeChild(Iframe)
+      const iframe = document.querySelector('IFRAME')
+      document.querySelector('body').removeChild(iframe)
     }
   </script>
 </body>
