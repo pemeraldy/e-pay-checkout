@@ -101,7 +101,8 @@
     .card-num-display{
       display: flex;
       color:white;
-      justify-content: space-between;
+      /* justify-content: space-between; */
+      justify-content: center;
       margin-top: 50px;
       padding: 20px;
       /* border: 1px solid white; */
@@ -196,6 +197,10 @@
       margin-top: 20px;
       cursor: pointer;
     }
+    .card-btn span{
+      font-size: 22px;
+      font-weight: 500;
+    }
     /* RESPONSIVENESS */
     @media screen and (max-width: 440px) {
       .card-display{
@@ -218,7 +223,8 @@
   </style>
 </head>
 <body>
-  <div class="wrapper">
+  
+  <div class="wrapper">    
       <div class="details-container">
         <div class="card-display">
           <div class="card-display__front">
@@ -228,30 +234,25 @@
           </div>
 
           <div class="card-num-display">
-            <div class="batch">
+            <div class="batch one">
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
+              <span class="num-display">#</span>
               <span class="num-display">#</span>
               <span class="num-display">#</span>
               <span class="num-display">#</span>
               <span class="num-display">#</span>
             </div>
-            <div class="batch">
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-            </div>
-            <div class="batch">
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-            </div>
-            <div class="batch">
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-            </div>
+            
           </div>
           <div class="date-month-dispaly">
             <div>
@@ -272,20 +273,20 @@
           <form class="card-form">
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
-              <input autocomplete="off"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
+              <input autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
             </div>
 
             <div class="row">
               <div class="input-group">
                 <label for="cardExp">Expiration Date</label>
-                <input type="text" id="cardExp" placeholder="09/21" class="card-input card-exp" pattern="\d*">
+                <input maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
               </div>
               <div class="input-group">
                 <label for="cvv">CVV</label>
-                <input type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
+                <input size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
               </div>
             </div>
-            <button class="card-btn" type="submit">Pay N2500000</button>
+            <button class="card-btn" type="submit">Pay <span class="amount">2000</span></button>
           </form>
         </div>
       </div>
@@ -301,7 +302,91 @@
       document.querySelector(".card-display").classList.remove("cvv-active");
     });
   }
+  function validateCardNum(){
+    let cardNumInput = document.getElementById('cardNumber')    
+    cardNumInput.addEventListener('input', (e)=>{     
+      e.target.value = formatCardNumbers(e.target.value)
+      maskCardNumberDisplay(e.target.value)          
+    })
+  }
+  function validateMonthYear(){
+    let cardExp = document.getElementById('cardExp')  
+    cardExp.addEventListener('input', (e)=>{   
+      e.target.value = formatMonthYear(e.target.value)
+      // maskCardExp(e.target.value)          
+    })
+  }
+  function validateCvv(){
+    let cardCvv = document.getElementById('cvv')  
+    cardCvv.addEventListener('input', (e)=>{   
+      e.target.value = e.target.value.replace(/[^0-9]/g, '')
+      // maskCardExp(e.target.value)          
+    })
+  }
+
+  function formatCardNumbers(value) {
+    let newval = '';         
+    value = value.replace(/[^0-9]/g, '');     
+    // iterate to letter-spacing after every 4 digits   
+    for(var i = 0; i < value.length; i++) {             
+      if(i%4 == 0 && i > 0) newval = newval.concat(' ');             
+      newval = newval.concat(value[i]);         
+    }        
+    return newval
+  }
+  function formatMonthYear(value) {
+    let newval = '';         
+    value = value.replace(/[^0-9]/g, '');  
+    // if(Number(value) !== 0 && ) value = `0${value}`
+    let month, year   
+    // iterate to letter-spacing after 2 digits   
+    for(var i = 0; i < value.length; i++) {             
+      if(i%2 == 0 && i > 0) newval = newval.concat('/');             
+      newval = newval.concat(value[i]);
+      month = Number(newval[0])
+      year = Number(newval[1])
+      console.log(newval)
+      // if(month < 1 || month > 12){
+      //   console.log('Invalid Month', month)
+      // }
+    }        
+    return newval
+  }
+
+  function maskCardNumberDisplay (inputValue) {
+      let parent = document.querySelector('.card-num-display')
+      let numEl = document.createElement('SPAN')
+      numEl.classList.add('num-display')
+      
+      let arr = inputValue.split('')
+      console.log(arr)
+      parent.querySelector('.batch').innerHTML = ''
+      arr.forEach((element, index) => { 
+        numEl.innerText = element        
+        parent.querySelector('.batch').innerHTML += `<span class="num-display">${element}</span>`        
+      })
+    }
+
+    function formatToNaira (num) {
+      if (!num) return 0;
+      const nairaFormat = new Intl.NumberFormat("en-NG", {
+        style: "currency",
+        currency: "NGN"
+      });
+      return nairaFormat.format(num);
+    };
+    function formatBtnAmount(){
+      const spanAmount = document.querySelector('span.amount')
+      spanAmount.innerText = formatToNaira(2000)
+
+    }
+
+
   spinCard()
+  validateCardNum()
+  validateMonthYear()
+  validateCvv()
+  formatBtnAmount()
   </script>
 </body>
 </html>
