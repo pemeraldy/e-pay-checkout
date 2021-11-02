@@ -291,7 +291,6 @@
         </div>
       </div>
   </div>
-  <!-- <script src="./ui-utils.js"></script> -->
   <script>
     function spinCard() {
     const ccvInput = document.getElementById("cvv");
@@ -304,9 +303,21 @@
   }
   function validateCardNum(){
     let cardNumInput = document.getElementById('cardNumber')    
-    cardNumInput.addEventListener('input', (e)=>{     
+    cardNumInput.addEventListener('input', (e)=>{ 
+      
       e.target.value = formatCardNumbers(e.target.value)
       maskCardNumberDisplay(e.target.value)          
+      if(e.target.value === ''){
+        console.log('Empty')
+        generateNumHarsh()
+      }
+      function generateNumHarsh(){
+          let harshWrap = document.querySelector('.batch')
+          console.log(harshWrap)
+          for(i=0; i<16; i++){
+            harshWrap.innerHTML += '<span class="num-display">#</span>'
+          }
+       }
     })
   }
   function validateMonthYear(){
@@ -343,6 +354,7 @@
     for(var i = 0; i < value.length; i++) {             
       if(i%2 == 0 && i > 0) newval = newval.concat('/');             
       newval = newval.concat(value[i]);
+      newval = newval.split('/')
       month = Number(newval[0])
       year = Number(newval[1])
       console.log(newval)
