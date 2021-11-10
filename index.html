@@ -26,7 +26,11 @@
       align-items: center;
       background: #f0ddfc;  /*#dde4fc or #ddeefc or #f0ddfc */
     }
-    
+    .error, .exp-error{
+      color: rgb(164, 4, 4);
+      font-size: 12px;
+      display: none;
+    }
     /* CARD DISPLAY SECTION FRONT */
     .details-container{
       max-width: 570px;
@@ -230,7 +234,7 @@
           <div class="card-display__front">
             <div class="chip-logo-wrap">
             <div class="chip-img"><img src="./chip.png" alt=""></div>
-            <div class="card-type"><img src="./mastercard.png" alt=""></div>
+            <div class="card-type"><img src="./unknown-card.png" alt=""></div>
           </div>
 
           <div class="card-num-display">
@@ -274,12 +278,14 @@
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
               <input autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
+                <span class="error">Invalid card number</span>
             </div>
 
             <div class="row">
               <div class="input-group">
                 <label for="cardExp">Expiration Date</label>
                 <input maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
+                <span class="exp-error">Invalid date</span>
               </div>
               <div class="input-group">
                 <label for="cvv">CVV</label>
@@ -293,33 +299,46 @@
   </div>
   <script>
     function spinCard() {
-    const ccvInput = document.getElementById("cvv");
-    ccvInput.addEventListener("focus", () => {
-      document.querySelector(".card-display").classList.add("cvv-active");
-    });
-    ccvInput.addEventListener("blur", () => {
-      document.querySelector(".card-display").classList.remove("cvv-active");
-    });
-  }
+      const ccvInput = document.getElementById("cvv");
+      ccvInput.addEventListener("focus", () => {
+        document.querySelector(".card-display").classList.add("cvv-active");
+      });
+      ccvInput.addEventListener("blur", () => {
+        document.querySelector(".card-display").classList.remove("cvv-active");
+      });
+    }
+    function showError(elClass){
+      const el = document.querySelector(`.${elClass}`)
+      el.style.display = 'block'
+    }
+    function hideError(elClass){
+      const el = document.querySelector(`.${elClass}`)
+      el.style.display = 'none'
+    }
   function validateCardNum(){
     let cardNumInput = document.getElementById('cardNumber')    
     cardNumInput.addEventListener('input', (e)=>{ 
       
       e.target.value = formatCardNumbers(e.target.value)
-      maskCardNumberDisplay(e.target.value)          
+      maskCardNumberDisplay(e.target.value)
+      let cardType = returnCardType(e.target.value)
+      document.querySelector('.card-type').querySelector('IMG').src = `${cardType}.png`
+      console.log(returnCardType(e.target.value))
+
       if(e.target.value === ''){
         console.log('Empty')
         generateNumHarsh()
       }
       function generateNumHarsh(){
           let harshWrap = document.querySelector('.batch')
-          console.log(harshWrap)
+          // console.log(harshWrap)
           for(i=0; i<16; i++){
             harshWrap.innerHTML += '<span class="num-display">#</span>'
           }
        }
     })
   }
+  
   function validateMonthYear(){
     let cardExp = document.getElementById('cardExp')  
     cardExp.addEventListener('input', (e)=>{   
@@ -327,6 +346,7 @@
       // maskCardExp(e.target.value)          
     })
   }
+  
   function validateCvv(){
     let cardCvv = document.getElementById('cvv')  
     cardCvv.addEventListener('input', (e)=>{   
@@ -345,22 +365,33 @@
     }        
     return newval
   }
+  
   function formatMonthYear(value) {
     let newval = '';         
+    let month, year,monthYear
+    const date = new Date()
+    const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
     value = value.replace(/[^0-9]/g, '');  
     // if(Number(value) !== 0 && ) value = `0${value}`
-    let month, year   
     // iterate to letter-spacing after 2 digits   
     for(var i = 0; i < value.length; i++) {             
-      if(i%2 == 0 && i > 0) newval = newval.concat('/');             
-      newval = newval.concat(value[i]);
-      // newval = newval.split('/')
-      month = Number(newval[0])
-      year = Number(newval[1])
-      console.log(newval)
-      // if(month < 1 || month > 12){
-      //   console.log('Invalid Month', month)
-      // }
+      if(i%2 == 0 && i > 0) newval = newval.concat('/');
+      newval = newval.concat(value[i])
+      // console.log(newval.split('/'))
+      monthYear = newval.split('/')
+      month = monthYear[0]
+      year = monthYear[1]
+      console.log('month:', month, 'Year:', year)
+      hideError('exp-error')
+      if(month < 1 || month > 12){
+        console.log('invalid Month:', month)
+        showError('exp-error')
+      }
+      
+      if(year < currentYear){
+        showError('exp-error')
+        console.log('Current Year:',currentYear,'invalid Year:', year)
+      }
     }        
     return newval
   }
@@ -371,28 +402,41 @@
       numEl.classList.add('num-display')
       
       let arr = inputValue.split('')
-      console.log(arr)
+      // console.log(arr)
       parent.querySelector('.batch').innerHTML = ''
       arr.forEach((element, index) => { 
         numEl.innerText = element        
-        parent.querySelector('.batch').innerHTML += `<span class="num-display">${element}</span>`        
+        parent.querySelector('.batch').innerHTML += `<span class="num-display">${element}</span>`
       })
     }
 
-    function formatToNaira (num) {
-      if (!num) return 0;
-      const nairaFormat = new Intl.NumberFormat("en-NG", {
-        style: "currency",
-        currency: "NGN"
-      });
-      return nairaFormat.format(num);
-    };
-    function formatBtnAmount(){
-      const spanAmount = document.querySelector('span.amount')
-      spanAmount.innerText = formatToNaira(2000)
+  function formatToNaira (num) {
+    if (!num) return 0;
+    const nairaFormat = new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN"
+    });
+    return nairaFormat.format(num);
+  };
+    
+  function formatBtnAmount(){
+    const spanAmount = document.querySelector('span.amount')
+    spanAmount.innerText = formatToNaira(2000)
+  }
 
-    }
+  function returnCardType(num) {
+    let number = num;
+    let re = new RegExp("^4");
+    if (number.match(re) != null) return "visa";
 
+    re = new RegExp("^(34|37)");
+    if (number.match(re) != null) return "amex";
+
+    re = new RegExp("^5[1-5]");
+    if (number.match(re) != null) return "mastercard";
+
+    return "unknown-card"; // default type
+  }
 
   spinCard()
   validateCardNum()
