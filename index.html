@@ -260,7 +260,7 @@
           </div>
           <div class="date-month-dispaly">
             <div>
-              <span>MM</span> <span>/</span> <span>YY</span>
+              <span class="exp-month">MM</span> <span>/</span> <span class="exp-yr">YY</span>
             </div>
           </div>
           </div>
@@ -381,16 +381,21 @@
       monthYear = newval.split('/')
       month = monthYear[0]
       year = monthYear[1]
+      if(month == 0) year = 'MM'
+      if(year == undefined) year = 'YY'
+      document.querySelector('.exp-month').innerText = month
+      document.querySelector('.exp-yr').innerText = year
       console.log('month:', month, 'Year:', year)
       hideError('exp-error')
       if(month < 1 || month > 12){
-        console.log('invalid Month:', month)
+        month = 'MM'
+        // console.log('invalid Month:', month)
         showError('exp-error')
       }
       
-      if(year < currentYear){
+      if(year < currentYear || year > (Number(currentYear)+4)){
         showError('exp-error')
-        console.log('Current Year:',currentYear,'invalid Year:', year)
+        console.log('Current Year:',currentYear+4,'invalid Year:', year)
       }
     }        
     return newval
