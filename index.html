@@ -26,7 +26,7 @@
       align-items: center;
       background: #f0ddfc;  /*#dde4fc or #ddeefc or #f0ddfc */
     }
-    .error, .exp-error{
+    .error, .exp-error,.num-error{
       color: rgb(164, 4, 4);
       font-size: 12px;
       display: none;
@@ -278,7 +278,7 @@
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
               <input autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
-                <span class="error">Invalid card number</span>
+                <span class="num-error">Invalid card number</span>
             </div>
 
             <div class="row">
@@ -323,7 +323,11 @@
       maskCardNumberDisplay(e.target.value)
       let cardType = returnCardType(e.target.value)
       document.querySelector('.card-type').querySelector('IMG').src = `${cardType}.png`
-      console.log(returnCardType(e.target.value))
+      if(cardType === 'unknown-card') {
+        showError('num-error')
+      } else {
+        hideError('num-error')
+      }
 
       if(e.target.value === ''){
         console.log('Empty')
@@ -372,30 +376,32 @@
     const date = new Date()
     const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
     value = value.replace(/[^0-9]/g, '');  
-    // if(Number(value) !== 0 && ) value = `0${value}`
+    
+    /* If value typed is a single digit, prepend 0 to value */
+    // if(value.length < 2) value = value.padStart(2, '0')
     // iterate to letter-spacing after 2 digits   
     for(var i = 0; i < value.length; i++) {             
       if(i%2 == 0 && i > 0) newval = newval.concat('/');
       newval = newval.concat(value[i])
-      // console.log(newval.split('/'))
+      
       monthYear = newval.split('/')
       month = monthYear[0]
       year = monthYear[1]
-      if(month == 0) year = 'MM'
+      if(month == 0) month = 'MM'
       if(year == undefined) year = 'YY'
       document.querySelector('.exp-month').innerText = month
       document.querySelector('.exp-yr').innerText = year
-      console.log('month:', month, 'Year:', year)
+      // console.log('month:', month, 'Year:', year)
       hideError('exp-error')
-      if(month < 1 || month > 12){
+      if(month < 1 || month > 12 || !month){
         month = 'MM'
-        // console.log('invalid Month:', month)
+        console.log('Month:', month)
         showError('exp-error')
       }
       
       if(year < currentYear || year > (Number(currentYear)+4)){
         showError('exp-error')
-        console.log('Current Year:',currentYear+4,'invalid Year:', year)
+        console.log('Current Year + 4:',Number(currentYear)+4,'invalid Year:', year)
       }
     }        
     return newval
