@@ -108,17 +108,18 @@ function createLoader() {
 }
 function loadIframe() {
   createLoader();
-  const Iframe = document.createElement("IFRAME");
-  Iframe.style = "display:none;";
-  Iframe.src = "index.html";
+  const iframe = document.createElement("IFRAME");
+  iframe.setAttribute("ID", "tiqwaEpay");
+  iframe.style = "display:none;";
+  iframe.src = "index.html";
   // Iframe TODO: Give id to iframe
-  document.querySelector("body").appendChild(Iframe);
-  Iframe.onload = function () {
-    Iframe.style += "display: block";
-    Iframe.style = iframeStyle;
+  document.querySelector("body").appendChild(iframe);
+  iframe.onload = function () {
+    iframe.style += "display: block";
+    iframe.style = iframeStyle;
   };
 }
 function closeIframe() {
-  const iframe = document.querySelector("IFRAME");
+  const iframe = document.getElementById("tiqwaEpay");
   document.querySelector("body").removeChild(iframe);
 }
