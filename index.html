@@ -377,8 +377,12 @@
     const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
     value = value.replace(/[^0-9]/g, '');  
     
+    console.log('Before If:', value)
     /* If value typed is a single digit, prepend 0 to value */
-    // if(value.length < 2) value = value.padStart(2, '0')
+    if(value > 0 && value < 9) {
+      console.log('YES!!!!')
+      value = value.padStart(2, '0')
+    }
     // iterate to letter-spacing after 2 digits   
     for(var i = 0; i < value.length; i++) {             
       if(i%2 == 0 && i > 0) newval = newval.concat('/');
