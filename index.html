@@ -362,6 +362,7 @@
   function formatCardNumbers(value) {
     let newval = '';         
     value = value.replace(/[^0-9]/g, '');     
+    // value = value.padEnd(16, '#')
     // iterate to letter-spacing after every 4 digits   
     for(var i = 0; i < value.length; i++) {             
       if(i%4 == 0 && i > 0) newval = newval.concat(' ');             
