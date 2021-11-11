@@ -329,9 +329,11 @@
       e.target.value = formatCardNumbers(e.target.value)
       maskCardNumberDisplay(e.target.value)
       let cardType = returnCardType(e.target.value)
+      let cardNums = e.target.value
+      let totalNumChars = cardNums.split(' ').join('')
       document.querySelector('.card-type').querySelector('IMG').src = `${cardType}.png`
-      if(cardType === 'unknown-card') {
-        showError('num-error')
+      if(cardType === 'unknown-card' || totalNumChars.length < 16) {
+        showError('num-error')        
       } else {
         hideError('num-error')
       }
@@ -385,10 +387,9 @@
     const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
     value = value.replace(/[^0-9]/g, '');  
     
-    console.log('Before If:', value)
+    // console.log('Before If:', value)
     /* If value typed is a single digit, prepend 0 to value */
     if(value > 0 && value < 9) {
-      console.log('YES!!!!')
       value = value.padStart(2, '0')
     }
     // iterate to letter-spacing after 2 digits   
@@ -413,7 +414,6 @@
       
       if(year < currentYear || year > (Number(currentYear)+4)){
         showError('exp-error')
-        console.log('Current Year + 4:',Number(currentYear)+4,'invalid Year:', year)
       }
     }        
     return newval
