@@ -18,6 +18,23 @@
     img{
       width: 100%;
     }
+    .close-btn{
+      position: absolute;
+      top: 0;
+      right: 20px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 10px;
+      cursor: pointer;
+      background: crimson;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     .wrapper{
       width: 100%;
       height: 100vh;
@@ -26,10 +43,15 @@
       align-items: center;
       background: #f0ddfc;  /*#dde4fc or #ddeefc or #f0ddfc */
     }
-    
+    .error, .exp-error,.num-error{
+      color: rgb(164, 4, 4);
+      font-size: 12px;
+      display: none;
+    }
     /* CARD DISPLAY SECTION FRONT */
     .details-container{
-      max-width: 570px;
+      position: relative;
+      max-width: 450px;
       width: 100%;
       padding: 20px;
     }
@@ -37,8 +59,8 @@
     .card-display{
       transition: 0.45s;
       transform-style: preserve-3d;
-      max-width: 430px;
-      height: 270px;
+      max-width: 300px;
+      height: 200px;
       border-radius: 15px;
       margin: 0 auto;
       margin-bottom: -100px;
@@ -103,13 +125,13 @@
       color:white;
       /* justify-content: space-between; */
       justify-content: center;
-      margin-top: 50px;
-      padding: 20px;
+      margin-top: 40px;
+      padding: 10px;
       /* border: 1px solid white; */
       border-radius: 5px;
     }
     span.num-display{
-      font-size: 24px;
+      font-size: 16px;
       margin: 2px;
     }
     .date-month-dispaly{
@@ -121,6 +143,14 @@
       font-size: 20px;
     }
 
+    .card-user{
+      text-align: center;      
+      color: white;
+      margin-top: 6px;
+    }
+    .card-user span{
+      font-size: 12px;      
+    }
     /* BACK */
     
     .card-display__back .card-num-display{
@@ -144,8 +174,8 @@
       padding: 0 5px;
     }
     .form-wrapper{
-      padding: 35px;
-      padding-top: 180px;
+      padding: 25px;
+      padding-top: 159px;
       border-radius: 15px;
       background: rgb(255, 255, 255);
       box-shadow: 0 30px 60px 0 rgb(142 90 148 / 40%);
@@ -202,13 +232,13 @@
       font-weight: 500;
     }
     /* RESPONSIVENESS */
-    @media screen and (max-width: 440px) {
+    @media screen and (max-width:440px) {
       .card-display{
-        max-width: 300px;
-        height: 190px;
+        max-width: 256px;
+        height: 164px;
       }
       .card-num-display{
-        margin-top: 20px;
+        margin-top: 10px;
       }
       span.num-display{
         font-size: 12px;
@@ -219,6 +249,13 @@
       .card-display__back .card-num-display{
         padding: 5px;
       }
+      .chip-img{
+        width: 39px;
+      }
+      .card-type{
+        width:39px;
+        height: 37px;
+      }
     }
   </style>
 </head>
@@ -226,11 +263,12 @@
   
   <div class="wrapper">    
       <div class="details-container">
+        <div onclick="closeIframe();" class="close-btn">X</div>
         <div class="card-display">
           <div class="card-display__front">
             <div class="chip-logo-wrap">
             <div class="chip-img"><img src="./chip.png" alt=""></div>
-            <div class="card-type"><img src="./mastercard.png" alt=""></div>
+            <div class="card-type"><img src="./unknown-card.png" alt=""></div>
           </div>
 
           <div class="card-num-display">
@@ -256,8 +294,11 @@
           </div>
           <div class="date-month-dispaly">
             <div>
-              <span>MM</span> <span>/</span> <span>YY</span>
+              <span class="exp-month">MM</span> <span>/</span> <span class="exp-yr">YY</span>
             </div>
+          </div>
+          <div class="card-user">
+            <span>pemeraldy@gmail.com</span>
           </div>
           </div>
           <div class="card-display__back">
@@ -274,12 +315,14 @@
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
               <input autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
+                <span class="num-error">Invalid card number</span>
             </div>
 
             <div class="row">
               <div class="input-group">
                 <label for="cardExp">Expiration Date</label>
                 <input maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
+                <span class="exp-error">Invalid date</span>
               </div>
               <div class="input-group">
                 <label for="cvv">CVV</label>
@@ -293,33 +336,52 @@
   </div>
   <script>
     function spinCard() {
-    const ccvInput = document.getElementById("cvv");
-    ccvInput.addEventListener("focus", () => {
-      document.querySelector(".card-display").classList.add("cvv-active");
-    });
-    ccvInput.addEventListener("blur", () => {
-      document.querySelector(".card-display").classList.remove("cvv-active");
-    });
-  }
+      const ccvInput = document.getElementById("cvv");
+      ccvInput.addEventListener("focus", () => {
+        document.querySelector(".card-display").classList.add("cvv-active");
+      });
+      ccvInput.addEventListener("blur", () => {
+        document.querySelector(".card-display").classList.remove("cvv-active");
+      });
+    }
+    function showError(elClass){
+      const el = document.querySelector(`.${elClass}`)
+      el.style.display = 'block'
+    }
+    function hideError(elClass){
+      const el = document.querySelector(`.${elClass}`)
+      el.style.display = 'none'
+    }
   function validateCardNum(){
     let cardNumInput = document.getElementById('cardNumber')    
     cardNumInput.addEventListener('input', (e)=>{ 
       
       e.target.value = formatCardNumbers(e.target.value)
-      maskCardNumberDisplay(e.target.value)          
+      maskCardNumberDisplay(e.target.value)
+      let cardType = returnCardType(e.target.value)
+      let cardNums = e.target.value
+      let totalNumChars = cardNums.split(' ').join('')
+      document.querySelector('.card-type').querySelector('IMG').src = `${cardType}.png`
+      if(cardType === 'unknown-card' || totalNumChars.length < 16) {
+        showError('num-error')        
+      } else {
+        hideError('num-error')
+      }
+
       if(e.target.value === ''){
         console.log('Empty')
         generateNumHarsh()
       }
       function generateNumHarsh(){
           let harshWrap = document.querySelector('.batch')
-          console.log(harshWrap)
+          // console.log(harshWrap)
           for(i=0; i<16; i++){
             harshWrap.innerHTML += '<span class="num-display">#</span>'
           }
        }
     })
   }
+  
   function validateMonthYear(){
     let cardExp = document.getElementById('cardExp')  
     cardExp.addEventListener('input', (e)=>{   
@@ -327,6 +389,7 @@
       // maskCardExp(e.target.value)          
     })
   }
+  
   function validateCvv(){
     let cardCvv = document.getElementById('cvv')  
     cardCvv.addEventListener('input', (e)=>{   
@@ -338,6 +401,7 @@
   function formatCardNumbers(value) {
     let newval = '';         
     value = value.replace(/[^0-9]/g, '');     
+    // value = value.padEnd(16, '#')
     // iterate to letter-spacing after every 4 digits   
     for(var i = 0; i < value.length; i++) {             
       if(i%4 == 0 && i > 0) newval = newval.concat(' ');             
@@ -345,22 +409,42 @@
     }        
     return newval
   }
+  
   function formatMonthYear(value) {
     let newval = '';         
+    let month, year,monthYear
+    const date = new Date()
+    const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
     value = value.replace(/[^0-9]/g, '');  
-    // if(Number(value) !== 0 && ) value = `0${value}`
-    let month, year   
+    
+    // console.log('Before If:', value)
+    /* If value typed is a single digit, prepend 0 to value */
+    if(value > 0 && value < 9) {
+      value = value.padStart(2, '0')
+    }
     // iterate to letter-spacing after 2 digits   
     for(var i = 0; i < value.length; i++) {             
-      if(i%2 == 0 && i > 0) newval = newval.concat('/');             
-      newval = newval.concat(value[i]);
-      // newval = newval.split('/')
-      month = Number(newval[0])
-      year = Number(newval[1])
-      console.log(newval)
-      // if(month < 1 || month > 12){
-      //   console.log('Invalid Month', month)
-      // }
+      if(i%2 == 0 && i > 0) newval = newval.concat('/');
+      newval = newval.concat(value[i])
+      
+      monthYear = newval.split('/')
+      month = monthYear[0]
+      year = monthYear[1]
+      if(month == 0) month = 'MM'
+      if(year == undefined) year = 'YY'
+      document.querySelector('.exp-month').innerText = month
+      document.querySelector('.exp-yr').innerText = year
+      // console.log('month:', month, 'Year:', year)
+      hideError('exp-error')
+      if(month < 1 || month > 12 || !month){
+        month = 'MM'
+        console.log('Month:', month)
+        showError('exp-error')
+      }
+      
+      if(year < currentYear || year > (Number(currentYear)+4)){
+        showError('exp-error')
+      }
     }        
     return newval
   }
@@ -371,34 +455,56 @@
       numEl.classList.add('num-display')
       
       let arr = inputValue.split('')
-      console.log(arr)
+      // console.log(arr)
       parent.querySelector('.batch').innerHTML = ''
       arr.forEach((element, index) => { 
         numEl.innerText = element        
-        parent.querySelector('.batch').innerHTML += `<span class="num-display">${element}</span>`        
+        parent.querySelector('.batch').innerHTML += `<span class="num-display">${element}</span>`
       })
     }
 
-    function formatToNaira (num) {
-      if (!num) return 0;
-      const nairaFormat = new Intl.NumberFormat("en-NG", {
-        style: "currency",
-        currency: "NGN"
-      });
-      return nairaFormat.format(num);
-    };
-    function formatBtnAmount(){
-      const spanAmount = document.querySelector('span.amount')
-      spanAmount.innerText = formatToNaira(2000)
+  function formatToNaira (num) {
+    if (!num) return 0;
+    const nairaFormat = new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN"
+    });
+    return nairaFormat.format(num);
+  };
+    
+  function formatBtnAmount(){
+    const spanAmount = document.querySelector('span.amount')
+    spanAmount.innerText = formatToNaira(2000)
+  }
 
-    }
+  function returnCardType(num) {
+    let number = num;
+    let re = new RegExp("^4");
+    if (number.match(re) != null) return "visa";
 
+    re = new RegExp("^(34|37)");
+    if (number.match(re) != null) return "amex";
 
+    re = new RegExp("^5[1-5]");
+    if (number.match(re) != null) return "mastercard";
+
+    return "unknown-card"; // default type
+  }
+  
+  function closeIframe() {
+    const windowParent = window.parent.document
+    const iframe = windowParent.getElementById("tiqwaEpay");
+    // console.log(iframe)
+    windowParent.querySelector("body").removeChild(iframe);
+    windowParent.querySelector('body')
+  }
+  
   spinCard()
   validateCardNum()
   validateMonthYear()
   validateCvv()
   formatBtnAmount()
+  console.log(window.parent.document)
   </script>
 </body>
 </html>
