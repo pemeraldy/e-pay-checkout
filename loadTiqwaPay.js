@@ -106,12 +106,13 @@ function createLoader() {
   styleSheet.innerText = loaderCss;
   document.head.appendChild(styleSheet);
 }
-function loadIframe() {
+function loadIframe(config) {
+  // const { apiKey, userEmail, origin, currency } = config;
   createLoader();
   const iframe = document.createElement("IFRAME");
   iframe.setAttribute("ID", "tiqwaEpay");
   iframe.style = "display:none;";
-  iframe.src = "index.html";
+  iframe.src = "index.html?q=malam&email=pemeraldy"; //https://adoring-saha-1e3c5b.netlify.app
   // Iframe TODO: Give id to iframe
   document.querySelector("body").appendChild(iframe);
   iframe.onload = function () {
@@ -120,6 +121,9 @@ function loadIframe() {
   };
 }
 function closeIframe() {
-  const iframe = document.getElementById("tiqwaEpay");
-  document.querySelector("body").removeChild(iframe);
+  const windowParent = window.parent.document;
+  const iframe = windowParent.getElementById("tiqwaEpay");
+  // console.log(iframe)
+  windowParent.querySelector("body").removeChild(iframe);
+  windowParent.querySelector("body");
 }
