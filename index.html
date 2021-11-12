@@ -259,7 +259,7 @@
       justify-content: center;
       align-items: center;
     }
-  .success-payment{
+  .payment-message__container{
     position: relative;
     transition: 0.56s;
     /* max-width: 300px; */
@@ -271,6 +271,7 @@
     -webkit-box-shadow: 0px 2px 20px 7px rgba(0,0,0,0.16); 
     box-shadow: 0px 2px 20px 7px rgba(0,0,0,0.16);
     display: flex; 
+    display: none;
     justify-content: center;
     align-items: center;
     flex-direction: column
@@ -346,7 +347,7 @@
 <body>
   
   <div class="wrapper">    
-    <div class="success-payment">
+    <div class="payment-message__container hide">
       <div onclick="closeIframe();" class="feedback-close__btn">X</div>
       <div class="check-wrap">
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -358,7 +359,7 @@
     </svg>
         </div>
         <div>
-          <p class="success-text">Payment Successful</p>
+          <p onclick="showErrorMsg()" class="success-text">Payment Successful</p>
           <p class="payment-details">You paid $1000.00 to Tiqwa_HQ</p>
         </div>
     </svg>
@@ -398,7 +399,7 @@
               <span class="exp-month">MM</span> <span>/</span> <span class="exp-yr">YY</span>
             </div>
           </div>
-          <div class="card-user">
+          <div onclick="showSuccessMsg()" class="card-user">
             <span>pemeraldy@gmail.com</span>
           </div>
           </div>
@@ -465,7 +466,22 @@
       el.style.display = 'none'
     }
     
-    function showSuccessMessage(data={amount:'1000', receiver:'Yopee'}){
+    function showSuccessMsg(data={amount:'1000', receiver:'Yopee'}){
+      let messageContainder = document.querySelector('.payment-message__container')
+      let paymentFormContainder = document.querySelector('.details-container')
+      messageContainder.style.display = "flex"
+      paymentFormContainder.style.display = "none"
+      console.log(data,messageContainder)
+    }
+    function showErrorMsg(data={amount:'1000', receiver:'Yopee'}){
+      let messageContainder = document.querySelector('.payment-message__container')
+      let paymentFormContainder = document.querySelector('.details-container')
+      paymentFormContainder.style.display = "none"
+      messageContainder.querySelector('.success-text').innerText = "Payment Unsuccessful"
+      messageContainder.querySelector('.payment-details').style.display = "none"
+      messageContainder.querySelector('.check-wrap').style.display = 'none'
+      messageContainder.querySelector('.failed-wrap').style.display = 'unset'
+      messageContainder.style.display = "flex"
       
     }
 
@@ -611,9 +627,12 @@
     function closeIframe() {
     const windowParent = window.parent.document
     const iframe = windowParent.getElementById("tiqwaEpay");
+    const loader = windowParent.querySelector('body').querySelector('.loader-container')
     // console.log(iframe)
     windowParent.querySelector("body").removeChild(iframe);
-    windowParent.querySelector('body')
+    setTimeout(() =>{
+      windowParent.querySelector("body").removeChild(loader);
+    }, 1000)
   }
     
     function closePayment(){
