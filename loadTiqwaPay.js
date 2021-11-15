@@ -1,15 +1,16 @@
-const iframeStyle = `position:fixed;
-       top:0;
-       left:0; 
+const iframeStyle = `
+      position:fixed;
+      top:0;
+      left:0;
       bottom:0;
-       right:0; 
+      right:0;
       width:100%;
-       height:100%; 
-      border:none; 
-      margin:0; 
-      padding:0; 
+      height:100%; 
+      border:none;
+      margin:0;
+      padding:0;
       overflow:hidden;
-       z-index:999999;`;
+      z-index:999999;`;
 const loaderCss = `
       .loader-container{
         position:absolute;
@@ -26,7 +27,7 @@ const loaderCss = `
         border-radius: 50%;
       }
       .loader {
-        color: #ffffff;
+        color: #3f0547;
         font-size: 11px;
         text-indent: -99999em;
         margin: 55px auto;
@@ -106,12 +107,13 @@ function createLoader() {
   styleSheet.innerText = loaderCss;
   document.head.appendChild(styleSheet);
 }
-function loadIframe() {
+function loadIframe(config) {
+  // const { apiKey, userEmail, origin, currency } = config;
   createLoader();
   const iframe = document.createElement("IFRAME");
   iframe.setAttribute("ID", "tiqwaEpay");
   iframe.style = "display:none;";
-  iframe.src = "index.html";
+  iframe.src = "index.html"; //https://adoring-saha-1e3c5b.netlify.app
   // Iframe TODO: Give id to iframe
   document.querySelector("body").appendChild(iframe);
   iframe.onload = function () {
@@ -120,6 +122,9 @@ function loadIframe() {
   };
 }
 function closeIframe() {
-  const iframe = document.getElementById("tiqwaEpay");
-  document.querySelector("body").removeChild(iframe);
+  const windowParent = window.parent.document;
+  const iframe = windowParent.getElementById("tiqwaEpay");
+  // console.log(iframe)
+  windowParent.querySelector("body").removeChild(iframe);
+  windowParent.querySelector("body");
 }

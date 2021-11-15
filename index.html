@@ -15,6 +15,14 @@
       font-size: 16px;
       box-sizing: border-box;
     }
+    /*UTILITIES*/
+    .hide{
+      display:none;
+    }
+    .show{
+      display: inherit;
+      display: unset;
+    }
     img{
       width: 100%;
     }
@@ -29,7 +37,7 @@
       font-size: 12px;
       padding: 10px;
       cursor: pointer;
-      background: crimson;
+      background: #3f0547;
       color: white;
       display: flex;
       justify-content: center;
@@ -39,6 +47,7 @@
       width: 100%;
       height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       background: #f0ddfc;  /*#dde4fc or #ddeefc or #f0ddfc */
@@ -125,13 +134,13 @@
       color:white;
       /* justify-content: space-between; */
       justify-content: center;
-      margin-top: 40px;
+      margin-top: 30px;
       padding: 10px;
       /* border: 1px solid white; */
       border-radius: 5px;
     }
     span.num-display{
-      font-size: 16px;
+      font-size: 10px;
       margin: 2px;
     }
     .date-month-dispaly{
@@ -157,7 +166,7 @@
       display: flex;
       justify-content: end;
       margin-top: 50px;
-      padding: 15px;
+      padding: 8px;
       border: 1px solid white;
       background: white;      
       border-radius: 5px;
@@ -231,39 +240,132 @@
       font-size: 22px;
       font-weight: 500;
     }
-    /* RESPONSIVENESS */
-    @media screen and (max-width:440px) {
-      .card-display{
-        max-width: 256px;
-        height: 164px;
-      }
-      .card-num-display{
-        margin-top: 10px;
-      }
-      span.num-display{
-        font-size: 12px;
-      }
-      .date-month-dispaly span{
-        font-size: 14px;
-      }
-      .card-display__back .card-num-display{
-        padding: 5px;
-      }
-      .chip-img{
-        width: 39px;
-      }
-      .card-type{
-        width:39px;
-        height: 37px;
-      }
+
+    /* SUCCESS MODAL */
+    .feedback-close__btn{
+      position: absolute;
+      top: -21px;
+      right: -22px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 10px;
+      cursor: pointer;
+      background: #3f0547;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+  .payment-message__container{
+    position: relative;
+    transition: 0.56s;
+    /* max-width: 300px; */
+    width: 300px;
+    background: #4f0754;
+    border: 1px solid #440448;
+    border-radius:10px;
+    height: 200px;
+    -webkit-box-shadow: 0px 2px 20px 7px rgba(0,0,0,0.16); 
+    box-shadow: 0px 2px 20px 7px rgba(0,0,0,0.16);
+    display: flex; 
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column
+  }
+  .happy-wrap{
+    width: 40px;
+    color: #ff9e47; /* #fa8116; */
+  }
+  .check-wrap{
+    color: #34eb95;
+    width: 40px;
+  }
+  .failed-wrap{
+    width: 40px;
+    color: #ff7a7a;
+    display: none;
+  }
+  .success-text{
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+  }
+  .payment-details{
+    color: #fff;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  .assurance{
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .padlock{
+    width: 20px;
+    margin-right:5px;
+    margin-left:5px;
+  }
+  .firm{
+    margin-right:5px;
+    margin-left:5px;
+    font-weight: 700;
+  }
+  /* RESPONSIVENESS */
+  @media screen and (max-width:440px) {
+    .card-display{
+      max-width: 256px;
+      height: 164px;
+    }
+    .card-num-display{
+      margin-top: 10px;
+    }
+    span.num-display{
+      font-size: 12px;
+    }
+    .date-month-dispaly span{
+      font-size: 14px;
+    }
+    .card-display__back .card-num-display{
+      padding: 5px;
+    }
+    .chip-img{
+      width: 39px;
+    }
+    .card-type{
+      width:39px;
+      height: 37px;
+    }
+  }
   </style>
 </head>
 <body>
   
   <div class="wrapper">    
+    <div class="payment-message__container hide">
+      <div onclick="closeIframe();" class="feedback-close__btn">X</div>
+      <div class="check-wrap">
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </div>
+        <div class="failed-wrap">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+    </svg>
+        </div>
+        <div>
+          <p onclick="showErrorMsg()" class="success-text">Payment Successful</p>
+          <p class="payment-details">You paid $1000.00 to Tiqwa_HQ</p>
+        </div>
+    </svg>
+    </div>
       <div class="details-container">
-        <div onclick="closeIframe();" class="close-btn">X</div>
+        <div onclick="closePayment();" class="close-btn">X</div>
         <div class="card-display">
           <div class="card-display__front">
             <div class="chip-logo-wrap">
@@ -297,7 +399,7 @@
               <span class="exp-month">MM</span> <span>/</span> <span class="exp-yr">YY</span>
             </div>
           </div>
-          <div class="card-user">
+          <div onclick="showSuccessMsg()" class="card-user">
             <span>pemeraldy@gmail.com</span>
           </div>
           </div>
@@ -332,8 +434,17 @@
             <button class="card-btn" type="submit">Pay <span class="amount">2000</span></button>
           </form>
         </div>
+        <p class="assurance">
+            <span class="padlock">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+              </svg>
+            </span>
+            Secured by <span class="firm">TIQWA</span>
+        </p>
       </div>
   </div>
+  
   <script>
     function spinCard() {
       const ccvInput = document.getElementById("cvv");
@@ -344,15 +455,37 @@
         document.querySelector(".card-display").classList.remove("cvv-active");
       });
     }
+    
     function showError(elClass){
       const el = document.querySelector(`.${elClass}`)
       el.style.display = 'block'
     }
+    
     function hideError(elClass){
       const el = document.querySelector(`.${elClass}`)
       el.style.display = 'none'
     }
-  function validateCardNum(){
+    
+    function showSuccessMsg(data={amount:'1000', receiver:'Yopee'}){
+      let messageContainder = document.querySelector('.payment-message__container')
+      let paymentFormContainder = document.querySelector('.details-container')
+      messageContainder.style.display = "flex"
+      paymentFormContainder.style.display = "none"
+      console.log(data,messageContainder)
+    }
+    function showErrorMsg(data={amount:'1000', receiver:'Yopee'}){
+      let messageContainder = document.querySelector('.payment-message__container')
+      let paymentFormContainder = document.querySelector('.details-container')
+      paymentFormContainder.style.display = "none"
+      messageContainder.querySelector('.success-text').innerText = "Payment Unsuccessful"
+      messageContainder.querySelector('.payment-details').style.display = "none"
+      messageContainder.querySelector('.check-wrap').style.display = 'none'
+      messageContainder.querySelector('.failed-wrap').style.display = 'unset'
+      messageContainder.style.display = "flex"
+      
+    }
+
+    function validateCardNum(){
     let cardNumInput = document.getElementById('cardNumber')    
     cardNumInput.addEventListener('input', (e)=>{ 
       
@@ -381,8 +514,8 @@
        }
     })
   }
-  
-  function validateMonthYear(){
+
+    function validateMonthYear(){
     let cardExp = document.getElementById('cardExp')  
     cardExp.addEventListener('input', (e)=>{   
       e.target.value = formatMonthYear(e.target.value)
@@ -390,7 +523,7 @@
     })
   }
   
-  function validateCvv(){
+    function validateCvv(){
     let cardCvv = document.getElementById('cvv')  
     cardCvv.addEventListener('input', (e)=>{   
       e.target.value = e.target.value.replace(/[^0-9]/g, '')
@@ -398,7 +531,7 @@
     })
   }
 
-  function formatCardNumbers(value) {
+    function formatCardNumbers(value) {
     let newval = '';         
     value = value.replace(/[^0-9]/g, '');     
     // value = value.padEnd(16, '#')
@@ -410,7 +543,7 @@
     return newval
   }
   
-  function formatMonthYear(value) {
+    function formatMonthYear(value) {
     let newval = '';         
     let month, year,monthYear
     const date = new Date()
@@ -449,7 +582,7 @@
     return newval
   }
 
-  function maskCardNumberDisplay (inputValue) {
+    function maskCardNumberDisplay (inputValue) {
       let parent = document.querySelector('.card-num-display')
       let numEl = document.createElement('SPAN')
       numEl.classList.add('num-display')
@@ -463,7 +596,7 @@
       })
     }
 
-  function formatToNaira (num) {
+    function formatToNaira (num) {
     if (!num) return 0;
     const nairaFormat = new Intl.NumberFormat("en-NG", {
       style: "currency",
@@ -472,12 +605,12 @@
     return nairaFormat.format(num);
   };
     
-  function formatBtnAmount(){
+    function formatBtnAmount(){
     const spanAmount = document.querySelector('span.amount')
     spanAmount.innerText = formatToNaira(2000)
   }
 
-  function returnCardType(num) {
+    function returnCardType(num) {
     let number = num;
     let re = new RegExp("^4");
     if (number.match(re) != null) return "visa";
@@ -491,20 +624,29 @@
     return "unknown-card"; // default type
   }
   
-  function closeIframe() {
+    function closeIframe() {
     const windowParent = window.parent.document
     const iframe = windowParent.getElementById("tiqwaEpay");
+    const loader = windowParent.querySelector('body').querySelector('.loader-container')
     // console.log(iframe)
     windowParent.querySelector("body").removeChild(iframe);
-    windowParent.querySelector('body')
+    setTimeout(() =>{
+      windowParent.querySelector("body").removeChild(loader);
+    }, 1000)
   }
+    
+    function closePayment(){
+      const paymentCard = document.querySelector('.details-container')
+      console.log(document)
+      document.body.querySelector('.wrapper').removeChild(paymentCard)
+    }
+
+    spinCard()
+    validateCardNum()
+    validateMonthYear()
+    validateCvv()
+    formatBtnAmount()
   
-  spinCard()
-  validateCardNum()
-  validateMonthYear()
-  validateCvv()
-  formatBtnAmount()
-  console.log(window.parent.document)
   </script>
 </body>
 </html>
