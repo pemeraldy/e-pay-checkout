@@ -140,7 +140,7 @@
       border-radius: 5px;
     }
     span.num-display{
-      font-size: 10px;
+      font-size: 16px;
       margin: 2px;
     }
     .date-month-dispaly{
@@ -375,22 +375,22 @@
 
           <div class="card-num-display">
             <div class="batch one">
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
-              <span class="num-display">#</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
             </div>
             
           </div>
@@ -431,7 +431,7 @@
                 <input size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
               </div>
             </div>
-            <button class="card-btn" type="submit">Pay <span class="amount">2000</span></button>
+            <button onclick="submitPayment()" class="card-btn" >Pay <span class="amount">2000</span></button>
           </form>
         </div>
         <p class="assurance">
@@ -481,8 +481,7 @@
       messageContainder.querySelector('.payment-details').style.display = "none"
       messageContainder.querySelector('.check-wrap').style.display = 'none'
       messageContainder.querySelector('.failed-wrap').style.display = 'unset'
-      messageContainder.style.display = "flex"
-      
+      messageContainder.style.display = "flex"      
     }
 
     function validateCardNum(){
@@ -509,7 +508,7 @@
           let harshWrap = document.querySelector('.batch')
           // console.log(harshWrap)
           for(i=0; i<16; i++){
-            harshWrap.innerHTML += '<span class="num-display">#</span>'
+            harshWrap.innerHTML += '<span class="num-display">*</span>'
           }
        }
     })
@@ -552,7 +551,7 @@
     
     // console.log('Before If:', value)
     /* If value typed is a single digit, prepend 0 to value */
-    if(value > 0 && value < 9) {
+    if(value > 1 && value < 10) {
       value = value.padStart(2, '0')
     }
     // iterate to letter-spacing after 2 digits   
@@ -639,6 +638,12 @@
       const paymentCard = document.querySelector('.details-container')
       console.log(document)
       document.body.querySelector('.wrapper').removeChild(paymentCard)
+    }
+
+    function submitPayment(e){
+      console.log(e)
+      // e.preventDefault()
+      // showSuccessMsg()
     }
 
     spinCard()
