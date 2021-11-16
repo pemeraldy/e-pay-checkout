@@ -1,0 +1,16 @@
+{
+  "name": "tiqwa-e-pay",
+  "version": "1.0.0",
+  "description": "Tiqwa payment gateway",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "online-payment",
+    "gateway",
+    "e-payment"
+  ],
+  "author": "Peter Olu",
+  "license": "ISC"
+}

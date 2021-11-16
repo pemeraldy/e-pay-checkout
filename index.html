@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tiqwa Payment</title>
+  <style>
+
+    @import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
+    *{
+      padding: 0;
+      margin: 0;
+      font-family: "Source Sans Pro", sans-serif;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    /*UTILITIES*/
+    .hide{
+      display:none;
+    }
+    .show{
+      display: inherit;
+      display: unset;
+    }
+    img{
+      width: 100%;
+    }
+    .close-btn{
+      position: absolute;
+      top: 0;
+      right: 20px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 10px;
+      cursor: pointer;
+      background: #3f0547;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .wrapper{
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #f0ddfc;  /*#dde4fc or #ddeefc or #f0ddfc */
+    }
+    .error, .exp-error,.num-error{
+      color: rgb(164, 4, 4);
+      font-size: 12px;
+      display: none;
+    }
+    /* CARD DISPLAY SECTION FRONT */
+    .details-container{
+      position: relative;
+      max-width: 450px;
+      width: 100%;
+      padding: 20px;
+    }
+
+    .card-display{
+      transition: 0.45s;
+      transform-style: preserve-3d;
+      max-width: 300px;
+      height: 200px;
+      border-radius: 15px;
+      margin: 0 auto;
+      margin-bottom: -100px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px 0 rgb(78 14 90 / 40%);
+      /* box-shadow: 0 20px 60px 0 rgb(14 42 90 / 40%); */
+      position: relative;
+      z-index: 2;
+    }
+    .card-display__front{
+      background: rgb(63, 5, 71);
+      padding: 10px;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      transition: 0.45s;
+      backface-visibility: hidden;
+      -webkit-backface-visibility:hidden;
+    }
+    .card-display__back{
+      width: 100%;
+      height: 100%;
+      display: flex;
+      border-radius: 15px;    
+      flex-direction: column;
+      justify-content: center;
+      position: absolute;
+      top:0;
+      left:0;
+      padding: 0 20px;
+      background: #4f0754;
+      backface-visibility: hidden;      
+      transform-style: preserve-3d;
+      transition: 0.45s;
+      transform: rotateY(180deg);
+    }
+
+    .card-display.cvv-active .card-display__back{
+      transform: rotateY(0);
+    }
+    .card-display.cvv-active .card-display__front{
+      transform: rotateY(180deg);
+    }
+
+    .chip-logo-wrap{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .chip-img{
+      width: 45px;
+    }
+    .card-type{
+      width: 60px;
+      height: 45px;
+      transition: 0.45s;
+    }
+
+    .card-num-display{
+      display: flex;
+      color:white;
+      /* justify-content: space-between; */
+      justify-content: center;
+      margin-top: 30px;
+      padding: 10px;
+      /* border: 1px solid white; */
+      border-radius: 5px;
+    }
+    span.num-display{
+      font-size: 16px;
+      margin: 2px;
+    }
+    .date-month-dispaly{
+      display: flex;
+      justify-content: center;
+    }
+    .date-month-dispaly span{
+      color: white;
+      font-size: 20px;
+    }
+
+    .card-user{
+      text-align: center;      
+      color: white;
+      margin-top: 6px;
+    }
+    .card-user span{
+      font-size: 12px;      
+    }
+    /* BACK */
+    
+    .card-display__back .card-num-display{
+      display: flex;
+      justify-content: end;
+      margin-top: 50px;
+      padding: 8px;
+      border: 1px solid white;
+      background: white;      
+      border-radius: 5px;
+    }
+    .card-display__back .card-num-display span{
+      color: rgb(29, 29, 29);
+      /* font-size: 24px; */
+    }
+    /* #################### */
+    .row{
+      display: flex;
+    }
+    .row .input-group{
+      padding: 0 5px;
+    }
+    .form-wrapper{
+      padding: 25px;
+      padding-top: 159px;
+      border-radius: 15px;
+      background: rgb(255, 255, 255);
+      box-shadow: 0 30px 60px 0 rgb(142 90 148 / 40%);
+      /* box-shadow: 0 30px 60px 0 rgb(90 116 148 / 40%); */
+    }
+    .input-group{
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    label{
+      font-size: 14px;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #1a3b5d;
+      width: 100%;
+      display: block;
+      user-select: none;
+    }
+    .card-input{
+      width: 100%;
+      height: 50px;
+      border-radius: 5px;
+      box-shadow: none;
+      border: 1px solid #ced6e0;
+      transition: all 0.3s ease-in-out;
+      font-size: 18px;
+      padding: 5px 15px;
+      background: none;
+      color: #1a3b5d;
+      font-family: "Source Sans Pro", sans-serif;
+    }
+    .card-input:focus{
+      box-shadow: 0px 10px 20px -13px rgb(32 56 117 / 35%);
+      border-color:rgb(114, 22, 201);
+      outline: none;
+    }
+    .card-btn {
+      width: 100%;
+      height: 55px;
+      background: #4f0754;
+      border: none;
+      border-radius: 5px;
+      font-size: 22px;
+      font-weight: 500;
+      font-family: "Source Sans Pro", sans-serif;
+      box-shadow: 3px 10px 20px 0px rgb(135 35 210 / 30%);
+      /* box-shadow: 3px 10px 20px 0px rgb(35 100 210 / 30%); */
+      color: #fff;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .card-btn span{
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    /* SUCCESS MODAL */
+    .feedback-close__btn{
+      position: absolute;
+      top: -21px;
+      right: -22px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 10px;
+      cursor: pointer;
+      background: #3f0547;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  .payment-message__container{
+    position: relative;
+    transition: 0.56s;
+    /* max-width: 300px; */
+    width: 300px;
+    background: #4f0754;
+    border: 1px solid #440448;
+    border-radius:10px;
+    height: 200px;
+    -webkit-box-shadow: 0px 2px 20px 7px rgba(0,0,0,0.16); 
+    box-shadow: 0px 2px 20px 7px rgba(0,0,0,0.16);
+    display: flex; 
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column
+  }
+  .happy-wrap{
+    width: 40px;
+    color: #ff9e47; /* #fa8116; */
+  }
+  .check-wrap{
+    color: #34eb95;
+    width: 40px;
+  }
+  .failed-wrap{
+    width: 40px;
+    color: #ff7a7a;
+    display: none;
+  }
+  .success-text{
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+  }
+  .payment-details{
+    color: #fff;
+    text-align: center;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  .assurance{
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .padlock{
+    width: 20px;
+    margin-right:5px;
+    margin-left:5px;
+  }
+  .firm{
+    margin-right:5px;
+    margin-left:5px;
+    font-weight: 700;
+  }
+
+  /* LOADER CSS */
+  .loader-container{
+        position:absolute;
+        top:0; left:0;
+        height:100vh; width: 100%;
+        display:flex;
+        justify-content:center; 
+        align-items: center;
+        background:#f0ddfc;
+        z-index:10;
+      }
+      .loader,
+      .loader:before,
+      .loader:after {
+        border-radius: 50%;
+      }
+      .loader {
+        color: #3f0547;
+        font-size: 11px;
+        text-indent: -99999em;
+        margin: 55px auto;
+        position: relative;
+        width: 10em;
+        height: 10em;
+        box-shadow: inset 0 0 0 1em;
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+      }
+      .loader:before,
+      .loader:after {
+        position: absolute;
+        content: '';
+      }
+      .loader:before {
+        width: 5.2em;
+        height: 10.2em;
+        background: #f0ddfc;
+        border-radius: 10.2em 0 0 10.2em;
+        top: -0.1em;
+        left: -0.1em;
+        -webkit-transform-origin: 5.1em 5.1em;
+        transform-origin: 5.1em 5.1em;
+        -webkit-animation: load2 2s infinite ease 1.5s;
+        animation: load2 2s infinite ease 1.5s;
+      }
+      .loader:after {
+        width: 5.2em;
+        height: 10.2em;
+        background: #f0ddfc;
+        border-radius: 0 10.2em 10.2em 0;
+        top: -0.1em;
+        left: 4.9em;
+        -webkit-transform-origin: 0.1em 5.1em;
+        transform-origin: 0.1em 5.1em;
+        -webkit-animation: load2 2s infinite ease;
+        animation: load2 2s infinite ease;
+      }
+      @-webkit-keyframes load2 {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes load2 {
+        0% {
+          -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+        }
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+
+
+  /* RESPONSIVENESS */
+  @media screen and (max-width:440px) {
+    .card-display{
+      max-width: 256px;
+      height: 164px;
+    }
+    .card-num-display{
+      margin-top: 10px;
+    }
+    span.num-display{
+      font-size: 12px;
+    }
+    .date-month-dispaly span{
+      font-size: 14px;
+    }
+    .card-display__back .card-num-display{
+      padding: 5px;
+    }
+    .chip-img{
+      width: 39px;
+    }
+    .card-type{
+      width:39px;
+      height: 37px;
+    }
+  }
+  </style>
+</head>
+<body>
+  
+  <div class="wrapper">    
+    <div class="payment-message__container hide">
+      <div onclick="closeIframe();" class="feedback-close__btn">X</div>
+      <div class="check-wrap">
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </div>
+        <div class="failed-wrap">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+    </svg>
+        </div>
+        <div>
+          <p onclick="showErrorMsg()" class="success-text">Payment Successful</p>
+          <p class="payment-details">You paid $1000.00 to Tiqwa_HQ</p>
+        </div>
+    </svg>
+    </div>
+      <div class="details-container">
+        <div onclick="closeIframe();" class="close-btn">X</div>
+        <div class="card-display">
+          <div class="card-display__front">
+            <div class="chip-logo-wrap">
+            <div class="chip-img"><img src="./chip.png" alt=""></div>
+            <div class="card-type"><img src="./unknown-card.png" alt=""></div>
+          </div>
+
+          <div class="card-num-display">
+            <div class="batch one">
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+              <span class="num-display">*</span>
+            </div>
+            
+          </div>
+          <div class="date-month-dispaly">
+            <div>
+              <span class="exp-month">MM</span> <span>/</span> <span class="exp-yr">YY</span>
+            </div>
+          </div>
+          <div onclick="showSuccessMsg()" class="card-user">
+            <span class="user-email">pemeraldy@gmail.com</span>
+          </div>
+          </div>
+          <div class="card-display__back">
+            <div class="card-num-display">
+              <span>                
+                <label for="cvv">***</label>
+              </span>
+            </div>
+
+          </div>
+        </div>
+        <div class="form-wrapper">
+          <form class="card-form">
+            <div class="input-group">
+              <label for="cardNumber">Card Number</label>
+              <input autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
+                <span class="num-error">Invalid card number</span>
+            </div>
+
+            <div class="row">
+              <div class="input-group">
+                <label for="cardExp">Expiration Date</label>
+                <input maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
+                <span class="exp-error">Invalid date</span>
+              </div>
+              <div class="input-group">
+                <label for="cvv">CVV</label>
+                <input size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
+              </div>
+            </div>
+            <button class="card-btn" >Pay <span class="amount">2000</span></button>
+          </form>
+        </div>
+        <p class="assurance">
+            <span class="padlock">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+              </svg>
+            </span>
+            Secured by <span class="firm">TIQWA</span>
+        </p>
+      </div>
+  </div>
+  
+  <script>    
+    window.addEventListener("message", async (event) => {
+      // console.log('Incoming message:',event.data)          
+      try {
+        await initializeUIData(event.data)
+        console.log('done-Setting')
+        // hideLoader()
+      } catch (error) {
+          console.log(error)
+      }
+
+
+    }, false)
+    
+    function initializeUIData({email, amount}){
+      document.querySelector('.user-email').innerText = email
+      document.querySelector('.card-btn').innerText = formatToNaira(amount)
+    }
+
+    function createLoader() {
+      const loaderElement = document.createElement("DIV");
+      const loaderContainer = document.createElement("DIV");
+      loaderContainer.classList.add("loader-container");
+      loaderElement.classList.add("loader");
+      loaderContainer.appendChild(loaderElement);
+      document.body.appendChild(loaderContainer);      
+    }
+    function showLoader(){
+      document.querySelector('.loader-container').style.display = 'block'
+    }
+    function hideLoader(){
+      document.querySelector('.loader-container').style.display = 'none'
+    }
+    function spinCard() {
+      const ccvInput = document.getElementById("cvv");
+      ccvInput.addEventListener("focus", () => {
+        document.querySelector(".card-display").classList.add("cvv-active");
+      });
+      ccvInput.addEventListener("blur", () => {
+        document.querySelector(".card-display").classList.remove("cvv-active");
+      });
+    }
+    
+    function showError(elClass){
+      const el = document.querySelector(`.${elClass}`)
+      el.style.display = 'block'
+    }
+    
+    function hideError(elClass){
+      const el = document.querySelector(`.${elClass}`)
+      el.style.display = 'none'
+    }
+    
+    function showSuccessMsg(){
+      let messageContainder = document.querySelector('.payment-message__container')
+      let paymentFormContainder = document.querySelector('.details-container')
+      messageContainder.style.display = "flex"
+      paymentFormContainder.style.display = "none"
+      document.querySelector('.loader-container').style.display = 'none'
+      messageContainder.querySelector('.success-text').innerText = "Payment Successful"
+      messageContainder.querySelector('.payment-details').style.display = "block"
+      messageContainder.querySelector('.check-wrap').style.display = 'block'
+      messageContainder.querySelector('.failed-wrap').style.display = 'none'
+      messageContainder.style.display = "flex"
+    }
+    
+    function showErrorMsg(){
+      let messageContainder = document.querySelector('.payment-message__container')
+      let paymentFormContainder = document.querySelector('.details-container')
+      paymentFormContainder.style.display = "none"
+      messageContainder.querySelector('.loader').style.display = 'none'
+      messageContainder.querySelector('.success-text').innerText = "Payment Unsuccessful"
+      messageContainder.querySelector('.payment-details').style.display = "none"
+      messageContainder.querySelector('.check-wrap').style.display = 'none'
+      messageContainder.querySelector('.failed-wrap').style.display = 'unset'
+      messageContainder.style.display = "flex"      
+    }
+
+    function validateCardNum(){
+    let cardNumInput = document.getElementById('cardNumber')    
+    cardNumInput.addEventListener('input', (e)=>{ 
+      
+      e.target.value = formatCardNumbers(e.target.value)
+      maskCardNumberDisplay(e.target.value)
+      let cardType = returnCardType(e.target.value)
+      let cardNums = e.target.value
+      let totalNumChars = cardNums.split(' ').join('')
+      document.querySelector('.card-type').querySelector('IMG').src = `${cardType}.png`
+      if(cardType === 'unknown-card' || totalNumChars.length < 16) {
+        showError('num-error')        
+      } else {
+        hideError('num-error')
+      }
+
+      if(e.target.value === ''){
+        console.log('Empty')
+        generateNumHarsh()
+      }
+      function generateNumHarsh(){
+          let harshWrap = document.querySelector('.batch')
+          // console.log(harshWrap)
+          for(i=0; i<16; i++){
+            harshWrap.innerHTML += '<span class="num-display">*</span>'
+          }
+       }
+    })
+  }
+
+    function validateMonthYear(){
+    let cardExp = document.getElementById('cardExp')  
+    cardExp.addEventListener('input', (e)=>{   
+      e.target.value = formatMonthYear(e.target.value)
+      // maskCardExp(e.target.value)          
+    })
+  }
+  
+    function validateCvv(){
+    let cardCvv = document.getElementById('cvv')  
+    cardCvv.addEventListener('input', (e)=>{   
+      e.target.value = e.target.value.replace(/[^0-9]/g, '')
+      // maskCardExp(e.target.value)          
+    })
+  }
+
+    function formatCardNumbers(value) {
+    let newval = '';         
+    value = value.replace(/[^0-9]/g, '');     
+    // value = value.padEnd(16, '#')
+    // iterate to letter-spacing after every 4 digits   
+    for(var i = 0; i < value.length; i++) {             
+      if(i%4 == 0 && i > 0) newval = newval.concat(' ');             
+      newval = newval.concat(value[i]);         
+    }        
+    return newval
+  }
+  
+    function formatMonthYear(value) {
+    let newval = '';         
+    let month, year,monthYear
+    const date = new Date()
+    const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
+    value = value.replace(/[^0-9]/g, '');  
+    
+    // console.log('Before If:', value)
+    /* If value typed is a single digit, prepend 0 to value */
+    if(value > 1 && value < 10) {
+      value = value.padStart(2, '0')
+    }
+    // iterate to letter-spacing after 2 digits   
+    for(var i = 0; i < value.length; i++) {             
+      if(i%2 == 0 && i > 0) newval = newval.concat('/');
+      newval = newval.concat(value[i])
+      
+      monthYear = newval.split('/')
+      month = monthYear[0]
+      year = monthYear[1]
+      if(month == 0) month = 'MM'
+      if(year == undefined) year = 'YY'
+      document.querySelector('.exp-month').innerText = month
+      document.querySelector('.exp-yr').innerText = year
+      // console.log('month:', month, 'Year:', year)
+      hideError('exp-error')
+      if(month < 1 || month > 12 || !month){
+        month = 'MM'
+        console.log('Month:', month)
+        showError('exp-error')
+      }
+      
+      if(year < currentYear || year > (Number(currentYear)+4)){
+        showError('exp-error')
+      }
+    }        
+    return newval
+  }
+
+    function maskCardNumberDisplay (inputValue) {
+      let parent = document.querySelector('.card-num-display')
+      let numEl = document.createElement('SPAN')
+      numEl.classList.add('num-display')
+      
+      let arr = inputValue.split('')
+      // console.log(arr)
+      parent.querySelector('.batch').innerHTML = ''
+      arr.forEach((element, index) => { 
+        numEl.innerText = element        
+        parent.querySelector('.batch').innerHTML += `<span class="num-display">${element}</span>`
+      })
+    }
+
+    function formatToNaira (num) {
+    if (!num) return 0;
+    const nairaFormat = new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN"
+    });
+    return nairaFormat.format(num);
+  };
+    
+    function formatBtnAmount(){
+    const spanAmount = document.querySelector('span.amount')
+    spanAmount.innerText = formatToNaira(2000)
+  }
+
+    function returnCardType(num) {
+    let number = num;
+    let re = new RegExp("^4");
+    if (number.match(re) != null) return "visa";
+
+    re = new RegExp("^(34|37)");
+    if (number.match(re) != null) return "amex";
+
+    re = new RegExp("^5[1-5]");
+    if (number.match(re) != null) return "mastercard";
+
+    return "unknown-card"; // default type
+  }
+  
+    function closeIframe() {
+    const windowParent = window.parent.document
+    const iframe = windowParent.getElementById("tiqwaEpay");
+    const loader = windowParent.querySelector('body').querySelector('.loader-container')
+    // console.log(iframe)
+    windowParent.querySelector("body").removeChild(loader);
+    // windowParent.querySelector('.loader-container').style.display = 'none'
+    windowParent.querySelector("body").removeChild(iframe);
+    
+  }
+    
+    function closePayment(){
+      const paymentCard = document.querySelector('.details-container')
+      console.log(document)
+      document.body.querySelector('.wrapper').removeChild(paymentCard)
+    }
+
+    // function submitPayment(e){
+    //   e.preventDefault()
+    //   console.log('ddsefsdf',e)
+    //   // e.preventDefault()
+    //   showSuccessMsg()
+    // }
+    document.querySelector('.card-btn').addEventListener('click', (e)=>{
+      e.preventDefault()
+      console.log('Hola!!!')
+      createLoader()
+      setTimeout(()=>{
+        showSuccessMsg()
+      },2000)
+    })
+    spinCard()
+    validateCardNum()
+    validateMonthYear()
+    validateCvv()
+    formatBtnAmount()
+  
+  </script>
+</body>
+</html>
