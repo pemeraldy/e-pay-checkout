@@ -528,22 +528,22 @@
   </div>
   
   <script>    
+  let paymentData 
     window.addEventListener("message", async (event) => {
-      // console.log('Incoming message:',event.data)          
+      // console.log('Incoming message:',event.data)                
       try {
         await initializeUIData(event.data)
         console.log('done-Setting')
+        paymentData = event.data
         // hideLoader()
       } catch (error) {
           console.log(error)
       }
-
-
     }, false)
     
     function initializeUIData({email, amount}){
       document.querySelector('.user-email').innerText = email
-      document.querySelector('.card-btn').innerText = formatToNaira(amount)
+      document.querySelector('.amount').innerText = formatToNaira(amount)
     }
 
     function createLoader() {
@@ -777,6 +777,9 @@
       createLoader()
       setTimeout(()=>{
         showSuccessMsg()
+        // console.log(paymentData.callback)
+        let callback  = eval(paymentData.callback)
+        callback()
       },2000)
     })
     spinCard()
