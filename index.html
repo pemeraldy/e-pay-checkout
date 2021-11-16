@@ -445,6 +445,7 @@
         </div>
     </svg>
     </div>
+    
       <div class="details-container">
         <div onclick="closeIframe();" class="close-btn">X</div>
         <div class="card-display">
@@ -509,10 +510,10 @@
               </div>
               <div class="input-group">
                 <label for="cvv">CVV</label>
-                <input size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
+                <input size="2" maxlength="3" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
               </div>
             </div>
-            <button class="card-btn" >Pay <span class="amount">2000</span></button>
+            <button class="card-btn" >Pay <span class="amount"></span></button>
           </form>
         </div>
         <p class="assurance">
@@ -760,15 +761,19 @@
       document.body.querySelector('.wrapper').removeChild(paymentCard)
     }
 
-    // function submitPayment(e){
-    //   e.preventDefault()
-    //   console.log('ddsefsdf',e)
-    //   // e.preventDefault()
-    //   showSuccessMsg()
-    // }
+    function validateBeforeSubmit(){
+      const cardNumber = document.getElementById('cardNumber').value
+      const cardExp = document.getElementById('cardExp').value
+      const cvv = document.getElementById('cvv').value
+      if(cardNumber.length < 19 || !cardNumber) return false
+      if(!cardExp) return false
+      if(!cvv) return false
+      return true
+    }
     document.querySelector('.card-btn').addEventListener('click', (e)=>{
       e.preventDefault()
-      console.log('Hola!!!')
+      let isValid = validateBeforeSubmit()
+      if(!isValid)return
       createLoader()
       setTimeout(()=>{
         showSuccessMsg()
