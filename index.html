@@ -416,19 +416,19 @@
           <form class="card-form">
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
-              <input autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
+              <input required autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
                 <span class="num-error">Invalid card number</span>
             </div>
 
             <div class="row">
               <div class="input-group">
                 <label for="cardExp">Expiration Date</label>
-                <input maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
+                <input required maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
                 <span class="exp-error date-error">Invalid date</span>
               </div>
               <div class="input-group">
                 <label for="cvv">CVV</label>
-                <input size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
+                <input required size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
               </div>
             </div>
             <button class="card-btn" type="submit">Pay <span class="amount">2000</span></button>
@@ -552,7 +552,7 @@
     
     // console.log('Before If:', value)
     /* If value typed is a single digit, prepend 0 to value */
-    if(value > 0 && value < 9) {
+    if(value > 1 && value < 9) {
       value = value.padStart(2, '0')
     }
     // iterate to letter-spacing after 2 digits   
@@ -647,7 +647,13 @@
       document.querySelector('.card-btn').addEventListener('click',(e)=>{
         e.preventDefault()
         console.log('Form Submission')
+        isSubmitValid()
       })
+    }
+    function isSubmitValid(){
+      const cardNum = document.getElementById('cardNumber').value.split(' ').join('')
+      const cardType = returnCardType(cardNum)
+      console.log(cardType, cardNum)
     }
     spinCard()
     validateCardNum()
