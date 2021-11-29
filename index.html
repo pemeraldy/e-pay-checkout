@@ -424,7 +424,7 @@
               <div class="input-group">
                 <label for="cardExp">Expiration Date</label>
                 <input maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
-                <span class="exp-error">Invalid date</span>
+                <span class="exp-error date-error">Invalid date</span>
               </div>
               <div class="input-group">
                 <label for="cvv">CVV</label>
@@ -572,10 +572,12 @@
       if(month < 1 || month > 12 || !month){
         month = 'MM'
         console.log('Month:', month)
+        document.querySelector('.date-error').innerText = 'Invalid month'
         showError('exp-error')
       }
       
       if(year < currentYear || year > (Number(currentYear)+4)){
+        document.querySelector('.date-error').innerText = 'Invalid year'
         showError('exp-error')
       }
     }        
