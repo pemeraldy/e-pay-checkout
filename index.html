@@ -642,12 +642,19 @@
       console.log(document)
       document.body.querySelector('.wrapper').removeChild(paymentCard)
     }
-
+    
+    function submissionHandler(){
+      document.querySelector('.card-btn').addEventListener('click',(e)=>{
+        e.preventDefault()
+        console.log('Form Submission')
+      })
+    }
     spinCard()
     validateCardNum()
     validateMonthYear()
     validateCvv()
     formatBtnAmount()
+    submissionHandler()
   
   </script>
 </body>
