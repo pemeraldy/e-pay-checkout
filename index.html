@@ -505,7 +505,7 @@
       }
 
       if(e.target.value === ''){
-        console.log('Empty')
+        // console.log('Empty')
         generateNumHarsh()
       }
       function generateNumHarsh(){
@@ -655,24 +655,52 @@
       })
     }
     function isSubmitValid(){
+      const cardBtn = document.querySelector('.card-btn')
       const date = new Date()
       const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
-      const cardBtn = document.querySelector('.card-btn')
-      cardBtn.disabled = false
       const cardNum = document.getElementById('cardNumber').value.split(' ').join('')
       const monthYear = document.getElementById('cardExp').value
       const month = monthYear.split('/')[0]
       const year = monthYear.split('/')[1]
-
+      
+      cardBtn.disabled = true
+      
       const cardType = returnCardType(cardNum)
       let cardIsValid = cardNum.length > 15 || cardType !== 'unknown-card'
-      let monthIsValid = month > 0 && month < 12
-      let yearIsValid = year < currentYear || year > (Number(currentYear)+4)
+      // let monthIsValid = month > 0 && month < 12
+      let dateIsValid = isCardExpValid()
+      if(cardIsValid  && dateIsValid){
+        console.log('Exp valid');
+        cardBtn.disabled = false
+      }
       console.log(monthYear)
       // if(!cardNum.length || cardType === 'unknown-card'){
       //   cardBtn.disabled = false
       // }
     }
+    const isCardExpValid = () =>{
+      const date = new Date()
+      const monthYear = document.getElementById('cardExp').value
+      const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
+      const month = monthYear.split('/')[0]
+      const year = monthYear.split('/')[1]
+      console.log('YEAR:',year, 'CurrentYear:',currentYear)
+      if(month < 1 || month > 12 || !month){
+        return false
+      }
+      if(year < currentYear){
+        console.log('Year less than ', currentYear)
+        return false
+      }
+      if( year > (Number(currentYear)+4) || !year){
+        console.log('Year outta range ', currentYear)
+        return false
+      }
+      console.log('All passed')
+      return true
+    }
+
+
     spinCard()
     validateCardNum()
     validateMonthYear()
