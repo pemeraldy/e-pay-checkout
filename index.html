@@ -79,6 +79,9 @@
       position: relative;
       z-index: 2;
     }
+    .card-display__front.submitting{
+      opacity: 0.8;
+    }
     .card-display__front{
       background: rgb(63, 5, 71);
       padding: 10px;
@@ -183,6 +186,7 @@
       padding: 0 5px;
     }
     .form-wrapper{
+      position: relative;
       padding: 25px;
       padding-top: 159px;
       border-radius: 15px;
@@ -190,6 +194,23 @@
       box-shadow: 0 30px 60px 0 rgb(142 90 148 / 40%);
       /* box-shadow: 0 30px 60px 0 rgb(90 116 148 / 40%); */
     }
+    .submission-loader{
+      display: none;
+    }
+    .submission-loader.submitting{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      bottom: 0;
+      top: 0;
+      left: 0;
+      background: #f0ddfc;
+      border-radius: 10px;
+      display:flex;
+      justify-content:center; 
+      align-items: center;
+    }
+    
     .input-group{
       margin-bottom: 20px;
       width: 100%;
@@ -347,6 +368,63 @@
       height: 37px;
     }
   }
+  /* Loader */
+  .lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #3f0547;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -418,6 +496,14 @@
           </div>
         </div>
         <div class="form-wrapper">
+          <div class="submission-loader">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
           <form class="card-form">
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
@@ -434,7 +520,7 @@
               <div class="input-group">
                 <label for="cvv">CVV</label>
                 <input required size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
-                <span class="exp-error cvv-error">Invalid date</span>
+                <span class="exp-error cvv-error">Invalid CVV</span>
               </div>
             </div>
             <button class="card-btn" type="submit">Pay <span class="amount">2000</span></button>
@@ -535,8 +621,7 @@
       let cardCvv = document.getElementById('cvv')  
       cardCvv.addEventListener('input', (e)=>{ 
         hideError('cvv-error')
-        let value =  e.target.value
-        console.log(value)
+        let value =  e.target.value        
          e.target.value = value.replace(/[^0-9]/g, '')
          if(e.target.value.length < 3){
             showError('cvv-error')
@@ -670,10 +755,10 @@
       // let monthIsValid = month > 0 && month < 12
       let dateIsValid = isCardExpValid()
       if(cardIsValid  && dateIsValid){
-        console.log('Exp valid');
+        // console.log('Exp valid');
         cardBtn.disabled = false
       }
-      console.log(monthYear)
+      // console.log(monthYear)
       // if(!cardNum.length || cardType === 'unknown-card'){
       //   cardBtn.disabled = false
       // }
@@ -701,7 +786,10 @@
     }
 
     function submissionHandler(){
+      
       document.querySelector('.card-btn').addEventListener('click',(e)=>{
+        document.querySelector('.card-display__front').classList.add('submitting')
+        document.querySelector('.submission-loader').classList.add('submitting')
         e.preventDefault()
         console.log('Form Submission')
         
