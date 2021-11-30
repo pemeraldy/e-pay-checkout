@@ -240,7 +240,12 @@
       font-size: 22px;
       font-weight: 500;
     }
-
+    .card-btn:disabled{
+      background-color: #fad1ff;
+      color:rgb(63, 5, 71);
+      font-weight: bold;
+      cursor:not-allowed;
+    }
     /* SUCCESS MODAL */
     .feedback-close__btn{
       position: absolute;
@@ -481,14 +486,12 @@
       messageContainder.querySelector('.payment-details').style.display = "none"
       messageContainder.querySelector('.check-wrap').style.display = 'none'
       messageContainder.querySelector('.failed-wrap').style.display = 'unset'
-      messageContainder.style.display = "flex"
-      
+      messageContainder.style.display = "flex"     
     }
 
     function validateCardNum(){
     let cardNumInput = document.getElementById('cardNumber')    
-    cardNumInput.addEventListener('input', (e)=>{ 
-      
+    cardNumInput.addEventListener('input', (e)=>{       
       e.target.value = formatCardNumbers(e.target.value)
       maskCardNumberDisplay(e.target.value)
       let cardType = returnCardType(e.target.value)
@@ -522,6 +525,10 @@
       // maskCardExp(e.target.value)          
     })
   }
+  document.querySelector('form').addEventListener('input', (e) =>{
+  //  console.log('Event running') 
+   isSubmitValid()
+  })
   
     function validateCvv(){
     let cardCvv = document.getElementById('cvv')  
@@ -549,10 +556,8 @@
     const date = new Date()
     const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
     value = value.replace(/[^0-9]/g, '');  
-    
-    // console.log('Before If:', value)
-    /* If value typed is a single digit, prepend 0 to value */
-    if(value > 1 && value < 9) {
+        
+    if(value > 1 ) {
       value = value.padStart(2, '0')
     }
     // iterate to letter-spacing after 2 digits   
@@ -571,7 +576,6 @@
       hideError('exp-error')
       if(month < 1 || month > 12 || !month){
         month = 'MM'
-        console.log('Month:', month)
         document.querySelector('.date-error').innerText = 'Invalid month'
         showError('exp-error')
       }
@@ -647,13 +651,27 @@
       document.querySelector('.card-btn').addEventListener('click',(e)=>{
         e.preventDefault()
         console.log('Form Submission')
-        isSubmitValid()
+        
       })
     }
     function isSubmitValid(){
+      const date = new Date()
+      const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
+      const cardBtn = document.querySelector('.card-btn')
+      cardBtn.disabled = false
       const cardNum = document.getElementById('cardNumber').value.split(' ').join('')
+      const monthYear = document.getElementById('cardExp').value
+      const month = monthYear.split('/')[0]
+      const year = monthYear.split('/')[1]
+
       const cardType = returnCardType(cardNum)
-      console.log(cardType, cardNum)
+      let cardIsValid = cardNum.length > 15 || cardType !== 'unknown-card'
+      let monthIsValid = month > 0 && month < 12
+      let yearIsValid = year < currentYear || year > (Number(currentYear)+4)
+      console.log(monthYear)
+      // if(!cardNum.length || cardType === 'unknown-card'){
+      //   cardBtn.disabled = false
+      // }
     }
     spinCard()
     validateCardNum()
@@ -661,7 +679,8 @@
     validateCvv()
     formatBtnAmount()
     submissionHandler()
-  
+    /* disbale button until form is validated*/ 
+    document.querySelector('.card-btn').disabled = true
   </script>
 </body>
 </html>
