@@ -79,6 +79,9 @@
       position: relative;
       z-index: 2;
     }
+    .card-display__front.submitting{
+      opacity: 0.8;
+    }
     .card-display__front{
       background: rgb(63, 5, 71);
       padding: 10px;
@@ -183,6 +186,7 @@
       padding: 0 5px;
     }
     .form-wrapper{
+      position: relative;
       padding: 25px;
       padding-top: 159px;
       border-radius: 15px;
@@ -190,6 +194,23 @@
       box-shadow: 0 30px 60px 0 rgb(142 90 148 / 40%);
       /* box-shadow: 0 30px 60px 0 rgb(90 116 148 / 40%); */
     }
+    .submission-loader{
+      display: none;
+    }
+    .submission-loader.submitting{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      bottom: 0;
+      top: 0;
+      left: 0;
+      background: #f0ddfc;
+      border-radius: 10px;
+      display:flex;
+      justify-content:center; 
+      align-items: center;
+    }
+    
     .input-group{
       margin-bottom: 20px;
       width: 100%;
@@ -240,7 +261,12 @@
       font-size: 22px;
       font-weight: 500;
     }
-
+    .card-btn:disabled{
+      background-color: #fad1ff;
+      color:rgb(63, 5, 71);
+      font-weight: bold;
+      cursor:not-allowed;
+    }
     /* SUCCESS MODAL */
     .feedback-close__btn{
       position: absolute;
@@ -342,6 +368,63 @@
       height: 37px;
     }
   }
+  /* Loader */
+  .lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #3f0547;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -413,22 +496,31 @@
           </div>
         </div>
         <div class="form-wrapper">
+          <div class="submission-loader">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
           <form class="card-form">
             <div class="input-group">
               <label for="cardNumber">Card Number</label>
-              <input autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
+              <input required autocomplete="off" maxlength="19"  type="text" id="cardNumber" placeholder="5555 6666 1111 2222" class="card-input card-number">
                 <span class="num-error">Invalid card number</span>
             </div>
 
             <div class="row">
               <div class="input-group">
                 <label for="cardExp">Expiration Date</label>
-                <input maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
+                <input required maxlength="5" type="text" id="cardExp" placeholder="09/21" class="card-input card-exp">
                 <span class="exp-error date-error">Invalid date</span>
               </div>
               <div class="input-group">
                 <label for="cvv">CVV</label>
-                <input size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
+                <input required size="2" maxlength="4" type="password" id="cvv" placeholder="***" class="card-input card-cvv " pattern="\d*">
+                <span class="exp-error cvv-error">Invalid CVV</span>
               </div>
             </div>
             <button class="card-btn" type="submit">Pay <span class="amount">2000</span></button>
@@ -481,14 +573,12 @@
       messageContainder.querySelector('.payment-details').style.display = "none"
       messageContainder.querySelector('.check-wrap').style.display = 'none'
       messageContainder.querySelector('.failed-wrap').style.display = 'unset'
-      messageContainder.style.display = "flex"
-      
+      messageContainder.style.display = "flex"     
     }
 
     function validateCardNum(){
     let cardNumInput = document.getElementById('cardNumber')    
-    cardNumInput.addEventListener('input', (e)=>{ 
-      
+    cardNumInput.addEventListener('input', (e)=>{       
       e.target.value = formatCardNumbers(e.target.value)
       maskCardNumberDisplay(e.target.value)
       let cardType = returnCardType(e.target.value)
@@ -502,7 +592,7 @@
       }
 
       if(e.target.value === ''){
-        console.log('Empty')
+        // console.log('Empty')
         generateNumHarsh()
       }
       function generateNumHarsh(){
@@ -522,14 +612,22 @@
       // maskCardExp(e.target.value)          
     })
   }
+  document.querySelector('form').addEventListener('input', (e) =>{
+  //  console.log('Event running') 
+   isSubmitValid()
+  })
   
-    function validateCvv(){
-    let cardCvv = document.getElementById('cvv')  
-    cardCvv.addEventListener('input', (e)=>{   
-      e.target.value = e.target.value.replace(/[^0-9]/g, '')
-      // maskCardExp(e.target.value)          
-    })
-  }
+    function validateCvv(){      
+      let cardCvv = document.getElementById('cvv')  
+      cardCvv.addEventListener('input', (e)=>{ 
+        hideError('cvv-error')
+        let value =  e.target.value        
+         e.target.value = value.replace(/[^0-9]/g, '')
+         if(e.target.value.length < 3){
+            showError('cvv-error')
+         }
+      })
+    }
 
     function formatCardNumbers(value) {
     let newval = '';         
@@ -549,10 +647,8 @@
     const date = new Date()
     const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
     value = value.replace(/[^0-9]/g, '');  
-    
-    // console.log('Before If:', value)
-    /* If value typed is a single digit, prepend 0 to value */
-    if(value > 0 && value < 9) {
+        
+    if(value > 1 ) {
       value = value.padStart(2, '0')
     }
     // iterate to letter-spacing after 2 digits   
@@ -571,7 +667,6 @@
       hideError('exp-error')
       if(month < 1 || month > 12 || !month){
         month = 'MM'
-        console.log('Month:', month)
         document.querySelector('.date-error').innerText = 'Invalid month'
         showError('exp-error')
       }
@@ -642,13 +737,73 @@
       console.log(document)
       document.body.querySelector('.wrapper').removeChild(paymentCard)
     }
+    
+    
+    function isSubmitValid(){
+      const cardBtn = document.querySelector('.card-btn')
+      const date = new Date()
+      const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
+      const cardNum = document.getElementById('cardNumber').value.split(' ').join('')
+      const monthYear = document.getElementById('cardExp').value
+      const month = monthYear.split('/')[0]
+      const year = monthYear.split('/')[1]
+      
+      cardBtn.disabled = true
+      
+      const cardType = returnCardType(cardNum)
+      let cardIsValid = cardNum.length > 15 || cardType !== 'unknown-card'
+      // let monthIsValid = month > 0 && month < 12
+      let dateIsValid = isCardExpValid()
+      if(cardIsValid  && dateIsValid){
+        // console.log('Exp valid');
+        cardBtn.disabled = false
+      }
+      // console.log(monthYear)
+      // if(!cardNum.length || cardType === 'unknown-card'){
+      //   cardBtn.disabled = false
+      // }
+    }
+    const isCardExpValid = () =>{
+      const date = new Date()
+      const monthYear = document.getElementById('cardExp').value
+      const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
+      const month = monthYear.split('/')[0]
+      const year = monthYear.split('/')[1]
+      // console.log('YEAR:',year, 'CurrentYear:',currentYear)
+      if(month < 1 || month > 12 || !month){
+        return false
+      }
+      if(year < currentYear){
+        // console.log('Year less than ', currentYear)
+        return false
+      }
+      if( year > (Number(currentYear)+4) || !year){
+        // console.log('Year outta range ', currentYear)
+        return false
+      }
+      console.log('All passed')
+      return true
+    }
+
+    function submissionHandler(){
+      
+      document.querySelector('.card-btn').addEventListener('click',(e)=>{
+        document.querySelector('.card-display__front').classList.add('submitting')
+        document.querySelector('.submission-loader').classList.add('submitting')
+        e.preventDefault()
+        console.log('Form Submission')
+        
+      })
+    }
 
     spinCard()
     validateCardNum()
     validateMonthYear()
     validateCvv()
     formatBtnAmount()
-  
+    submissionHandler()
+    /* disbale button until form is validated*/ 
+    document.querySelector('.card-btn').disabled = true
   </script>
 </body>
 </html>
