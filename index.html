@@ -581,28 +581,27 @@
 
     function validateCardNum(){
     let cardNumInput = document.getElementById('cardNumber')    
-    cardNumInput.addEventListener('input', (e)=>{       
+    cardNumInput.addEventListener('input', (e)=>{  
+      hideError('num-error')     
       e.target.value = formatCardNumbers(e.target.value)
       maskCardNumberDisplay(e.target.value)
       let cardType = returnCardType(e.target.value)
       let cardNums = e.target.value
       let totalNumChars = cardNums.split(' ').join('')
+
       if(cardType === 'verve'){
         e.target.maxLength = 23
       }else{
         e.target.maxLength = 19
       }
       document.querySelector('.card-type').querySelector('IMG').src = `${cardType}.png`
-      if(cardType === 'unknown-card' || totalNumChars.length < 16) {
-        showError('num-error')        
-      } else {
-        hideError('num-error')
-      }
       if(cardType === 'verve' && totalNumChars.length < 19){
         showError('num-error')
-      }else{
-        hideError('num-error')
       }
+      if(cardType === 'unknown-card' || totalNumChars.length < 16) {
+        showError('num-error')        
+      }
+      
       if(e.target.value === ''){
         // console.log('Empty')
         generateNumHarsh()
