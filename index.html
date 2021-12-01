@@ -728,11 +728,9 @@
     const windowParent = window.parent.document
     const iframe = windowParent.getElementById("tiqwaEpay");
     const loader = windowParent.querySelector('body').querySelector('.loader-container')
-    // console.log(iframe)
+        
     windowParent.querySelector("body").removeChild(iframe);
-    setTimeout(() =>{
-      windowParent.querySelector("body").removeChild(loader);
-    }, 1000)
+    return windowParent.querySelector("body").removeChild(loader);
   }
     
     function closePayment(){
@@ -769,21 +767,25 @@
     const isCardExpValid = () =>{
       const date = new Date()
       const monthYear = document.getElementById('cardExp').value
+      const cvv = document.getElementById('cvv').value
       const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
       const month = monthYear.split('/')[0]
       const year = monthYear.split('/')[1]
-      // console.log('YEAR:',year, 'CurrentYear:',currentYear)
+      console.log('YEAR:',year, 'CurrentYear:',currentYear)
       if(month < 1 || month > 12 || !month){
+        return false
+      }
+      
+      let maxRange = (Number(currentYear)+4)
+      if( year > maxRange ){
+        console.log('Year outta range ', currentYear)
         return false
       }
       if(year < currentYear){
         // console.log('Year less than ', currentYear)
         return false
-      }
-      if( year > (Number(currentYear)+4) || !year){
-        // console.log('Year outta range ', currentYear)
-        return false
-      }
+      } 
+      if(cvv.length < 3) return false
       console.log('All passed')
       return true
     }
