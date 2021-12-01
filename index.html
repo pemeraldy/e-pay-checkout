@@ -561,6 +561,9 @@
     function showSuccessMsg(data={amount:'1000', receiver:'Yopee'}){
       let messageContainder = document.querySelector('.payment-message__container')
       let paymentFormContainder = document.querySelector('.details-container')
+      messageContainder.querySelector('.check-wrap').style.display = 'unset'
+      messageContainder.querySelector('.failed-wrap').style.display = 'none'
+      messageContainder.querySelector('.success-text').innerText = "Payment Successful"
       messageContainder.style.display = "flex"
       paymentFormContainder.style.display = "none"
       console.log(data,messageContainder)
@@ -584,13 +587,22 @@
       let cardType = returnCardType(e.target.value)
       let cardNums = e.target.value
       let totalNumChars = cardNums.split(' ').join('')
+      if(cardType === 'verve'){
+        e.target.maxLength = 23
+      }else{
+        e.target.maxLength = 19
+      }
       document.querySelector('.card-type').querySelector('IMG').src = `${cardType}.png`
       if(cardType === 'unknown-card' || totalNumChars.length < 16) {
         showError('num-error')        
       } else {
         hideError('num-error')
       }
-
+      if(cardType === 'verve' && totalNumChars.length < 19){
+        showError('num-error')
+      }else{
+        hideError('num-error')
+      }
       if(e.target.value === ''){
         // console.log('Empty')
         generateNumHarsh()
@@ -714,6 +726,9 @@
 
     re = new RegExp("^(34|37)");
     if (number.match(re) != null) return "amex";
+    
+    re = new RegExp("^(50|60)");
+    if (number.match(re) != null) return "verve";
 
     re = new RegExp("^5[1-5]");
     if (number.match(re) != null) return "mastercard";
@@ -725,11 +740,9 @@
     const windowParent = window.parent.document
     const iframe = windowParent.getElementById("tiqwaEpay");
     const loader = windowParent.querySelector('body').querySelector('.loader-container')
-    // console.log(iframe)
+        
     windowParent.querySelector("body").removeChild(iframe);
-    setTimeout(() =>{
-      windowParent.querySelector("body").removeChild(loader);
-    }, 1000)
+    return windowParent.querySelector("body").removeChild(loader);
   }
     
     function closePayment(){
@@ -766,22 +779,26 @@
     const isCardExpValid = () =>{
       const date = new Date()
       const monthYear = document.getElementById('cardExp').value
+      const cvv = document.getElementById('cvv').value
       const currentYear = `${date.getFullYear()}`.split('').slice(-2).join('')
       const month = monthYear.split('/')[0]
       const year = monthYear.split('/')[1]
-      // console.log('YEAR:',year, 'CurrentYear:',currentYear)
+      console.log('YEAR:',year, 'CurrentYear:',currentYear)
       if(month < 1 || month > 12 || !month){
+        return false
+      }
+      
+      let maxRange = (Number(currentYear)+4)
+      if( year > maxRange ){
+        
         return false
       }
       if(year < currentYear){
         // console.log('Year less than ', currentYear)
         return false
-      }
-      if( year > (Number(currentYear)+4) || !year){
-        // console.log('Year outta range ', currentYear)
-        return false
-      }
-      console.log('All passed')
+      } 
+      if(cvv.length < 3) return false
+      
       return true
     }
 
@@ -791,6 +808,12 @@
         document.querySelector('.card-display__front').classList.add('submitting')
         document.querySelector('.submission-loader').classList.add('submitting')
         e.preventDefault()
+
+        new Promise((res, rej)=>{
+            setTimeout(()=>{
+                res(showSuccessMsg())
+            },3000)
+        })
         console.log('Form Submission')
         
       })
