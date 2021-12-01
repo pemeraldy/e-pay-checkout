@@ -561,6 +561,9 @@
     function showSuccessMsg(data={amount:'1000', receiver:'Yopee'}){
       let messageContainder = document.querySelector('.payment-message__container')
       let paymentFormContainder = document.querySelector('.details-container')
+      messageContainder.querySelector('.check-wrap').style.display = 'unset'
+      messageContainder.querySelector('.failed-wrap').style.display = 'none'
+      messageContainder.querySelector('.success-text').innerText = "Payment Successful"
       messageContainder.style.display = "flex"
       paymentFormContainder.style.display = "none"
       console.log(data,messageContainder)
@@ -791,6 +794,12 @@
         document.querySelector('.card-display__front').classList.add('submitting')
         document.querySelector('.submission-loader').classList.add('submitting')
         e.preventDefault()
+
+        new Promise((res, rej)=>{
+            setTimeout(()=>{
+                res(showSuccessMsg())
+            },3000)
+        })
         console.log('Form Submission')
         
       })
